@@ -8,7 +8,7 @@
 
 import SwiftUI
 import ArcGIS
-import ArcGISToolkit
+//import ArcGISToolkit
 
 public struct SearchWithGeocodeView: View {
     /// The viewpoint used by the search view to pan/zoom the map to the extent
@@ -52,7 +52,7 @@ public struct SearchWithGeocodeView: View {
     /// The view model for the sample.
     @StateObject private var model = Model()
     
-    var body: some View {
+    public var body: some View {
         MapViewReader { proxy in
             MapView(
                 map: model.map,
