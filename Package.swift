@@ -19,16 +19,20 @@ let package = Package(
             url: "https://github.com/Esri/arcgis-maps-sdk-swift",
             from: "200.4.0" // Use the appropriate version
         ),
+        .package(
+            url: "https://github.com/Esri/arcgis-maps-sdk-swift-toolkit",
+            from: "200.4.0" // Use the appropriate version
+        ),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "ArcGISMapSwift"//,
-//            dependencies: [
-//                            .product(name: "ArcGIS", package: "arcgis-maps-sdk-swift"),
-//                            .product(name: "arcgis-maps-sdk-swift-toolkit", package: "arcgis-maps-sdk-swift")
-//                        ]
+            name: "ArcGISMapSwift",
+            dependencies: [
+                            .product(name: "ArcGIS", package: "arcgis-maps-sdk-swift"),
+                            .product(name: "ArcGISToolkit", package: "arcgis-maps-sdk-swift-toolkit")
+                        ]
         ),
         .testTarget(
             name: "ArcGISMapSwiftTests",
