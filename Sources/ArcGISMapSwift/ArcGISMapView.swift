@@ -51,7 +51,8 @@ public struct SearchWithGeocodeView: View {
     
     /// The view model for the sample.
     @StateObject private var model = Model()
-    
+    public init() {
+    }
     public var body: some View {
         MapViewReader { proxy in
             MapView(
