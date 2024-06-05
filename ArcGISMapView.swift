@@ -8,7 +8,7 @@
 
 import SwiftUI
 import ArcGIS
-//import ArcGISToolkit
+import ArcGISToolkit
 
 public struct SearchWithGeocodeView: View {
     /// The viewpoint used by the search view to pan/zoom the map to the extent
