@@ -11,16 +11,17 @@ import ArcGIS
 public struct ArcGisMapPoints: View {
     
     @StateObject private var viewModel: MapViewModel
-    @State var points: [PointCoordinate] = []
+    @Binding var points: [PointCoordinate]
     
-    public init(points: [PointCoordinate]) {
-        self.points = points
-        _viewModel = StateObject(wrappedValue: MapViewModel(points: points))
+    public init(points: Binding<[PointCoordinate]>) {
+        _points = points
+        _viewModel = StateObject(wrappedValue: MapViewModel(points: []))
     }
     
     public var body: some View {
         MapView(map: viewModel.map, graphicsOverlays: [viewModel.graphicsOverlay])
             .onAppear {
+                viewModel.points = points
                 viewModel.updatePoints()
             }
             .onChange(of: points) { oldValue, newValue in
@@ -82,11 +83,11 @@ class MapViewModel: ObservableObject {
 
 struct ArcGisMapPoints_Previews: PreviewProvider {
     static var previews: some View {
-        ArcGisMapPoints(points: [
+        ArcGisMapPoints(points: .constant([
             PointCoordinate(lat: 30.078747, lng: 31.203802),
             PointCoordinate(lat: 30.078023, lng: 31.201780),
             PointCoordinate(lat: 30.080108, lng: 31.201958)
-        ])
+        ]))
     }
 }
 
