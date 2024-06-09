@@ -11,8 +11,10 @@ import ArcGIS
 public struct ArcGisMapPoints: View {
     
     @StateObject private var viewModel: MapViewModel
+    @State var points: [PointCoordinate] = []
     
     public init(points: [PointCoordinate]) {
+        self.points = points
         _viewModel = StateObject(wrappedValue: MapViewModel(points: points))
     }
     
@@ -21,7 +23,8 @@ public struct ArcGisMapPoints: View {
             .onAppear {
                 viewModel.updatePoints()
             }
-            .onChange(of: viewModel.points) { oldValue, newValue in
+            .onChange(of: points) { oldValue, newValue in
+                viewModel.points = points
                 viewModel.updatePoints()
             }
     }
