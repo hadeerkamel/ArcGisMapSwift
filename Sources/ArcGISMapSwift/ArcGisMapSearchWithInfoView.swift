@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct ArcGisMapSearch: View {
+public struct ArcGisMapSearchWithInfoView: View {
     @Environment(\.dismiss) private var dismiss
     
     @Binding var result: SearchWithGeocodeView.Result
@@ -34,5 +34,5 @@ public struct ArcGisMapSearch: View {
 }
 
 #Preview {
-    ArcGisMapSearch(apiKey: APIKEY, initialLatitude: 30.043414, initialLongitude: 31.235338, result: .constant(SearchWithGeocodeView.Result()))
+    ArcGisMapSearchWithInfoView(apiKey: APIKEY, initialLatitude: 30.043414, initialLongitude: 31.235338, result: .constant(SearchWithGeocodeView.Result()))
 }

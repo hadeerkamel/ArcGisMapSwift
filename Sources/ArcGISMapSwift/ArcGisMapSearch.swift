@@ -10,7 +10,7 @@ import SwiftUI
 import ArcGIS
 import ArcGISToolkit
 let APIKEY = "AAPK02c4162a6c244595b0564d86007d14b9Wvyt7aoPDLSmphsm2gwYsNv3ov6GmtsaqObChcDJx0YGTThOj2FwZ8xQQatIp3ds"
-public struct SearchWithGeocodeView: View {
+public struct ArcGisMapSearch: View {
     /// The viewpoint used by the search view to pan/zoom the map to the extent
     /// of the search results.
     @State private var viewpoint: Viewpoint? = Viewpoint(
@@ -202,7 +202,7 @@ public struct SearchWithGeocodeView: View {
     
 }
 
-private extension SearchWithGeocodeView {
+private extension ArcGisMapSearch {
     /// The model used to store the geo model and other expensive objects
     /// used in this view.
     class Model: ObservableObject {
@@ -247,10 +247,10 @@ private extension URL {
 }
 
 #Preview {
-    SearchWithGeocodeView(
+    ArcGisMapSearch(
         apiKey: APIKEY,
         initialLatitude: 30.043414,
-        initialLongitude: 31.235338, result: .constant(SearchWithGeocodeView.Result()))
+        initialLongitude: 31.235338, result: .constant(ArcGisMapSearch.Result()))
 }
 
 
