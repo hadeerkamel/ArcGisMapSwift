@@ -29,8 +29,7 @@ public struct ArcGisMapPoints: View {
         
         MapView(map: model.map, graphicsOverlays: [model.graphicsOverlay])
             .onAppear(){
-                model.points = self.points.map{return Point(x: $0.lng, y: $0.lat,spatialReference: .wgs84)}
-                model.drawPolyLine()
+                model.updatePoints(with: points)
             }
     }
     
@@ -51,7 +50,10 @@ private class Model: ObservableObject {
     }()
     init() {
         ArcGISEnvironment.apiKey = APIKey(APIKEY)
-        drawPolyLine()
+    }
+    func updatePoints(with coordinates: [PointCoordinate]) {
+            points = coordinates.map { Point(x: $0.lng, y: $0.lat, spatialReference: .wgs84) }
+            drawPolyLine()
     }
     func drawPolyLine(){
        
