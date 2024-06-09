@@ -12,19 +12,20 @@ public struct ArcGisMapSearch: View {
     
     @Binding var result: SearchWithGeocodeView.Result
     let apiKey: String
-    let initialLatitude: Double
-    let initialLongitude: Double
+    let initLat: Double
+    let initLng: Double
     
     public init(apiKey: String, initialLatitude: Double, initialLongitude: Double, result: Binding<SearchWithGeocodeView.Result> ) {
         self.apiKey = apiKey
         _result = result
-        self.initialLatitude = initialLatitude
-        self.initialLongitude = initialLongitude
+        initLat = initialLatitude
+        initLng = initialLongitude
     }
     
     public var body: some View {
         ZStack(alignment: .bottom){
-            SearchWithGeocodeView(apiKey: apiKey, initialLatitude: initialLatitude , initialLongitude: initialLongitude , result: $result)
+            SearchWithGeocodeView(apiKey: apiKey, initialLatitude: initLat , initialLongitude: initLng , result: $result)
+            
             Infoview(address: $result.address, currentLocationTapped: {}, confirmTapped: {
                 dismiss()
             })
