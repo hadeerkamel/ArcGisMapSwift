@@ -152,12 +152,13 @@ public struct ArcGisMapSearch: View {
                 }
                 .padding()
             }
-            .scrollDismissesKeyboard(.never)
+            
             
         }
         .onAppear(){
             initLocation()
         }
+        .keyboardAdaptive()
         
     }
     func initLocation(){
