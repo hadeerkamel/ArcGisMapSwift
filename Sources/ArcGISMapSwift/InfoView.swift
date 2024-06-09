@@ -57,7 +57,7 @@ public struct Infoview: View {
     }
 }
 
-//#Preview {
-//    @State var address = "x"
-//    Infoview(address: $address, currentLocationTapped: {}, confirmTapped: {})
-//}
+#Preview {
+
+    Infoview(address: .constant(""), currentLocationTapped: {}, confirmTapped: {})
+}

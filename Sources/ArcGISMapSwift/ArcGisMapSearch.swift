@@ -58,10 +58,7 @@ public struct ArcGisMapSearch: View {
         var address: String = ""
         var latitude: Double = 0.0
         var longitude: Double = 0.0
-        public init(address: String = "", latitude: Double = 0.0 , longitude: Double = 0.0) {
-            self.address = address
-            self.latitude = latitude
-            self.longitude = longitude
+        public init() {
         }
     }
     @Binding var result: Result
@@ -183,9 +180,11 @@ public struct ArcGisMapSearch: View {
             )
             
             // Update the callout text using the first result from the reverse geocode.
-            let address = geocodeResults.first?.attributes["LongLabel"] as? String
-            result.address = address ?? ""
-            print(address)
+            if let address = geocodeResults.first?.attributes["LongLabel"] as? String{
+                result.address = address ?? ""
+                print(address)
+                print(result.address)
+            }
         } catch {
             print(error)
             
