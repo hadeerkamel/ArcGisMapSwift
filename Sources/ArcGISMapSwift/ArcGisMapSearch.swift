@@ -64,7 +64,7 @@ public struct ArcGisMapSearch: View {
         }
     }
     @Binding var result: Result
-    
+    @State private var isKeyboardVisible: Bool = false
     
     public init(apiKey: String, initialLatitude: Double, initialLongitude: Double, result: Binding<Result> ) {
         ArcGISEnvironment.apiKey = APIKey(apiKey)
@@ -159,6 +159,10 @@ public struct ArcGisMapSearch: View {
             initLocation()
         }
         .keyboardAdaptive()
+        .onTapGesture {
+                   self.isKeyboardVisible = false
+                   UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+               }
         
     }
     func initLocation(){
