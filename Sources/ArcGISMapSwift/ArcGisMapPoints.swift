@@ -21,10 +21,13 @@ public struct ArcGisMapPoints: View {
             .onAppear {
                 viewModel.updatePoints()
             }
+            .onChange(of: viewModel.points) { oldValue, newValue in
+                viewModel.updatePoints()
+            }
     }
 }
 
-public struct PointCoordinate {
+public struct PointCoordinate: Equatable {
     let lat: Double
     let lng: Double
     public init(lat: Double, lng: Double) {
