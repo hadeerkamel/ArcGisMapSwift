@@ -7,6 +7,15 @@
 
 import SwiftUI
 import ArcGIS
+public struct PointCoordinate{
+    let lat: Double
+    let lng: Double
+    public init(lat: Double, lng: Double) {
+        self.lat = lat
+        self.lng = lng
+    }
+}
+
 
 public struct ArcGisMapPoints: View {
     
@@ -27,10 +36,7 @@ public struct ArcGisMapPoints: View {
     }
     
 }
-public struct PointCoordinate{
-    let lat: Double
-    let lng: Double
-}
+
 private class Model: ObservableObject {
     @Published var points: [Point] = []
     @State var map: Map = {
