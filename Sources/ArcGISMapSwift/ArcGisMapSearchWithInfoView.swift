@@ -10,13 +10,13 @@ import SwiftUI
 public struct ArcGisMapSearchWithInfoView: View {
     @Environment(\.dismiss) private var dismiss
     
-    @Binding var result: SearchWithGeocodeView.Result
-    let apiKey: String
+    @Binding var result: ArcGisMapSearch.Result
+    let apiKey_: String
     let initLat: Double
     let initLng: Double
     
-    public init(apiKey: String, initialLatitude: Double, initialLongitude: Double, result: Binding<SearchWithGeocodeView.Result> ) {
-        self.apiKey = apiKey
+    public init(apiKey: String, initialLatitude: Double, initialLongitude: Double, result: Binding<ArcGisMapSearch.Result> ) {
+        apiKey_ = apiKey
         _result = result
         initLat = initialLatitude
         initLng = initialLongitude
@@ -24,7 +24,7 @@ public struct ArcGisMapSearchWithInfoView: View {
     
     public var body: some View {
         ZStack(alignment: .bottom){
-            SearchWithGeocodeView(apiKey: apiKey, initialLatitude: initLat , initialLongitude: initLng , result: $result)
+            ArcGisMapSearch(apiKey: apiKey_, initialLatitude: initLat , initialLongitude: initLng , result: $result)
             
             Infoview(address: $result.address, currentLocationTapped: {}, confirmTapped: {
                 dismiss()
@@ -34,5 +34,5 @@ public struct ArcGisMapSearchWithInfoView: View {
 }
 
 #Preview {
-    ArcGisMapSearchWithInfoView(apiKey: APIKEY, initialLatitude: 30.043414, initialLongitude: 31.235338, result: .constant(SearchWithGeocodeView.Result()))
+    ArcGisMapSearchWithInfoView(apiKey: APIKEY, initialLatitude: 30.043414, initialLongitude: 31.235338, result: .constant(ArcGisMapSearch.Result()))
 }
