@@ -55,7 +55,7 @@ public struct ArcGisMapSearch: View {
     private var initLng: Double
    
     public struct Result{
-        var address: String = ""
+        var address: String = "x"
         var latitude: Double = 0.0
         var longitude: Double = 0.0
         public init() {
@@ -245,7 +245,9 @@ private extension URL {
     }
 }
 
+
 #Preview {
+   
     ArcGisMapSearch(
         apiKey: APIKEY,
         initialLatitude: 30.043414,
