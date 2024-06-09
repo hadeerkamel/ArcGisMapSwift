@@ -58,10 +58,15 @@ class MapViewModel: ObservableObject {
         graphicsOverlay.removeAllGraphics()
         var previousPoint: Point? = nil
         for p in points {
-            addPoint(point: p)
+            
             if let prev = previousPoint {
                 addLine(p1: prev, p2: p)
+                addPoint(point: prev)
             }
+            if p == points.last {
+                addPoint(point: p)
+            }
+            
             previousPoint = p
         }
     }
