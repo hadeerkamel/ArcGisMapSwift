@@ -9,6 +9,8 @@
 import SwiftUI
 import ArcGIS
 import ArcGISToolkit
+import UIKit
+
 let APIKEY = "AAPK02c4162a6c244595b0564d86007d14b9Wvyt7aoPDLSmphsm2gwYsNv3ov6GmtsaqObChcDJx0YGTThOj2FwZ8xQQatIp3ds"
 public struct ArcGisMapSearch: View {
     /// The viewpoint used by the search view to pan/zoom the map to the extent
@@ -86,6 +88,7 @@ public struct ArcGisMapSearch: View {
                     await getAddressFromPoint(point: tapLocation)
                 }
             }
+            
             .onNavigatingChanged { isGeoViewNavigating = $0 }
             .onViewpointChanged(kind: .centerAndScale) {
                 queryCenter = $0.targetGeometry.extent.center
@@ -154,6 +157,7 @@ public struct ArcGisMapSearch: View {
         .onAppear(){
             initLocation()
         }
+        .scrollDismissesKeyboard(.never)
     }
     func initLocation(){
         let loc = Point(latitude: initLat, longitude: initLng)
