@@ -20,12 +20,11 @@ public struct PointCoordinate{
 public struct ArcGisMapPoints: View {
     
     @StateObject private var model = Model()
-    @State var points: [PointCoordinate]
-    
-    public init(points: [PointCoordinate]) {
-        self.points = points
-       
-    }
+    @Binding var points: [PointCoordinate]
+        
+        public init(points: Binding<[PointCoordinate]>) {
+            self._points = points
+        }
     public var body: some View {
         
         MapView(map: model.map, graphicsOverlays: [model.graphicsOverlay])
@@ -90,7 +89,7 @@ private class Model: ObservableObject {
 }
 
 #Preview {
-    ArcGisMapPoints(points: [PointCoordinate(lat: 30.078747, lng: 31.203802),
+    ArcGisMapPoints(points: .constant([PointCoordinate(lat: 30.078747, lng: 31.203802),
                              PointCoordinate(lat: 30.078023, lng: 31.201780),
-                             PointCoordinate(lat: 30.080108, lng: 31.201958)])
+                             PointCoordinate(lat: 30.080108, lng: 31.201958)]))
 }
