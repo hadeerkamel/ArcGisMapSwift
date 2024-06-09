@@ -58,7 +58,7 @@ public struct SearchWithGeocodeView: View {
         var address: String = ""
         var latitude: Double = 0.0
         var longitude: Double = 0.0
-        public init(address: String, latitude: Double, longitude: Double) {
+        public init(address: String = "", latitude: Double = 0.0 , longitude: Double = 0.0) {
             self.address = address
             self.latitude = latitude
             self.longitude = longitude
