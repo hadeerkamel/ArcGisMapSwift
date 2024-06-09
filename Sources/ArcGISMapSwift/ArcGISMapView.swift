@@ -9,7 +9,7 @@
 import SwiftUI
 import ArcGIS
 import ArcGISToolkit
-
+let APIKEY = "AAPK02c4162a6c244595b0564d86007d14b9Wvyt7aoPDLSmphsm2gwYsNv3ov6GmtsaqObChcDJx0YGTThOj2FwZ8xQQatIp3ds"
 public struct SearchWithGeocodeView: View {
     /// The viewpoint used by the search view to pan/zoom the map to the extent
     /// of the search results.
@@ -51,11 +51,25 @@ public struct SearchWithGeocodeView: View {
     
     /// The view model for the sample.
     @StateObject private var model = Model()
+    private var initLat: Double
+    private var initLng: Double
+   
+    public struct Result{
+        var address: String = ""
+        var latitude: Double = 0.0
+        var longitude: Double = 0.0
+    }
+    @Binding var result: Result
     
-    public init(apiKey: String) {
+    
+    public init(apiKey: String, initialLatitude: Double, initialLongitude: Double, result: Binding<Result> ) {
         ArcGISEnvironment.apiKey = APIKey(apiKey)
+        initLat = initialLatitude
+        initLng = initialLongitude
+       _result = result
     }
     public var body: some View {
+        
         MapViewReader { proxy in
             MapView(
                 map: model.map,
@@ -76,9 +90,11 @@ public struct SearchWithGeocodeView: View {
                 
                 let latitude = CoordinateFormatter.latitudeLongitudeString(from: queryCenter!, format: .decimalDegrees, decimalPlaces: 6)
                 print(latitude)
-                
-                
-                
+                Task{
+                    if let center = queryCenter{
+                        await getAddressFromPoint(point: center)
+                    }
+                }
                 //print(longitude)
             }
             .onVisibleAreaChanged { newVisibleArea in
@@ -133,6 +149,14 @@ public struct SearchWithGeocodeView: View {
             }
             
         }
+        .onAppear(){
+            initLocation()
+        }
+    }
+    func initLocation(){
+        let loc = Point(latitude: initLat, longitude: initLng)
+        dropPin(at: loc)
+        viewpoint = Viewpoint(center: loc, scale: 1e3)
     }
     func getAddressFromPoint(point: Point) async {
 
@@ -154,7 +178,9 @@ public struct SearchWithGeocodeView: View {
             )
             
             // Update the callout text using the first result from the reverse geocode.
-            print(geocodeResults.first?.attributes["LongLabel"] as? String)
+            let address = geocodeResults.first?.attributes["LongLabel"] as? String
+            result.address = address ?? ""
+            print(address)
         } catch {
             print(error)
             
@@ -164,7 +190,6 @@ public struct SearchWithGeocodeView: View {
     }
     private func dropPin(at location: Point) {
         model.markerGraphic.geometry = location
-        
     }
     
     
@@ -184,16 +209,16 @@ private extension SearchWithGeocodeView {
         let searchResultsOverlay = GraphicsOverlay()
         
         let graphicsOverlay = GraphicsOverlay()
-        
+        //let markerImage:UIImage
         /// The red map marker graphic used to indicate a tap location on the map.
         let markerGraphic = {
             // Create a symbol using the image from the project assets.
-           // guard let markerImage = UIImage(named: "RedMarker") else { return Graphic() }
-            let markerSymbol = SimpleMarkerSymbol(style: .circle, color: .red)
-            
+            guard let markerImage = ImageProvider.loadImage(named: "marker") else{return Graphic()}
+            //let markerSymbol = SimpleMarkerSymbol(style: .circle, color: .red)
+            let markerSymbol = PictureMarkerSymbol(image: markerImage)
             // Change the symbol's offsets, so it aligns properly to a given point.
            // markerSymbol.leaderOffsetY = markerImage.size.height / 2
-          //  markerSymbol.offsetY = markerImage.size.height / 2
+           // markerSymbol.offsetY = markerImage.size.height / 2
             
             // Create a graphic with the symbol.
             return Graphic(symbol: markerSymbol)
@@ -205,6 +230,7 @@ private extension SearchWithGeocodeView {
         
         init() {
             graphicsOverlay.addGraphic(markerGraphic)
+          //  self.markerImage = markerImage
         }
     }
 }
@@ -216,5 +242,16 @@ private extension URL {
 }
 
 #Preview {
-    SearchWithGeocodeView(apiKey: "AAPK02c4162a6c244595b0564d86007d14b9Wvyt7aoPDLSmphsm2gwYsNv3ov6GmtsaqObChcDJx0YGTThOj2FwZ8xQQatIp3ds")
+    SearchWithGeocodeView(
+        apiKey: APIKEY,
+        initialLatitude: 30.043414,
+        initialLongitude: 31.235338, result: .constant(SearchWithGeocodeView.Result()))
+}
+
+
+public class ImageProvider {
+    public static func loadImage(named imageName: String) -> UIImage? {
+        let bundle = Bundle.module
+        return UIImage(named: imageName, in: bundle, compatibleWith: nil)
+    }
 }

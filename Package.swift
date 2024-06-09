@@ -32,7 +32,8 @@ let package = Package(
             dependencies: [
                             .product(name: "ArcGIS", package: "arcgis-maps-sdk-swift"),
                             .product(name: "ArcGISToolkit", package: "arcgis-maps-sdk-swift-toolkit")
-                        ]
+                        ],
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "ArcGISMapSwiftTests",
