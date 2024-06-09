@@ -152,12 +152,13 @@ public struct ArcGisMapSearch: View {
                 }
                 .padding()
             }
+            .scrollDismissesKeyboard(.never)
             
         }
         .onAppear(){
             initLocation()
         }
-        .scrollDismissesKeyboard(.never)
+        
     }
     func initLocation(){
         let loc = Point(latitude: initLat, longitude: initLng)
