@@ -25,11 +25,11 @@ public struct ArcGisMapSearchWithInfoView: View {
     public var body: some View {
         ZStack(alignment: .bottom){
             ArcGisMapSearch(apiKey: apiKey_, initialLatitude: initLat , initialLongitude: initLng , result: $result)
-
             
             Infoview(address: $result.address, currentLocationTapped: {}, confirmTapped: {
                 dismiss()
             })
+            .scrollDisabled(true)
         }
     }
 }
