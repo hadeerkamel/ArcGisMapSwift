@@ -29,7 +29,7 @@ public struct ArcGisMapSearchWithInfoView: View {
             Infoview(address: $result.address, currentLocationTapped: {}, confirmTapped: {
                 dismiss()
             })
-            .scrollDisabled(true)
+
         }
     }
 }

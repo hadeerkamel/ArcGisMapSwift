@@ -87,7 +87,6 @@ public struct ArcGisMapSearch: View {
                     await getAddressFromPoint(point: tapLocation)
                 }
             }
-            
             .onNavigatingChanged { isGeoViewNavigating = $0 }
             .onViewpointChanged(kind: .centerAndScale) {
                 queryCenter = $0.targetGeometry.extent.center
@@ -149,6 +148,7 @@ public struct ArcGisMapSearch: View {
                         calloutPlacement = nil
                     }
                 }
+                .keyboardAdaptive()
                 .padding()
             }
             
