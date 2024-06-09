@@ -27,6 +27,10 @@ public struct ArcGisMapPoints: View {
 public struct PointCoordinate {
     let lat: Double
     let lng: Double
+    public init(lat: Double, lng: Double) {
+        self.lat = lat
+        self.lng = lng
+    }
 }
 
 class MapViewModel: ObservableObject {
