@@ -72,7 +72,7 @@ public struct ArcGisMapSearch: View {
             
         }
         .onAppear {
-           // initLocation()
+            initLocation()
         }
         .onDisappear {
             model.stopLocationDataSource()
@@ -85,8 +85,8 @@ public struct ArcGisMapSearch: View {
         }
         do {
             try await model.startLocationDataSource()
-            
-            print(locationDisplay.location?.position.x)
+            print("lat: "); print(locationDisplay.location?.position.x)
+            print("lng: "); print(locationDisplay.location?.position.y)
         } catch {
             print("Faild to start detecting current location")
             print(error)
@@ -114,11 +114,11 @@ public struct ArcGisMapSearch: View {
     
     private func viewpointChanged(_ center: Point) {
         queryCenter = center
-        Task {
-            if let center = queryCenter {
-                await getAddressFromPoint(point: center)
-            }
-        }
+//        Task {
+//            if let center = queryCenter {
+//                await getAddressFromPoint(point: center)
+//            }
+//        }
     }
     
     private func performIdentify(proxy: MapViewProxy) async {
@@ -165,7 +165,6 @@ public struct ArcGisMapSearch: View {
                     calloutPlacement = nil
                 }
             }
-            .keyboardAdaptive()
             .padding()
     }
     
@@ -194,8 +193,7 @@ public struct ArcGisMapSearch: View {
             }
             // Starts the location display data source.
             try await locationDisplay.dataSource.start()
-            print("lat: "); print(locationDisplay.location?.position.x)
-            print("lng: "); print(locationDisplay.location?.position.y)
+           
         }
         
         /// Stops the location data source.
