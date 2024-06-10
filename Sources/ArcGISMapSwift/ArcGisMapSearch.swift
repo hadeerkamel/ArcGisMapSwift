@@ -79,7 +79,7 @@ public struct ArcGisMapSearch: View {
         }
     }
     private func setupCurrentLocation() async{
-        print("current")
+        
         guard model.locationDisplay.dataSource.status != .started else {
             return
         }
@@ -151,6 +151,9 @@ public struct ArcGisMapSearch: View {
     
     private func dropPin(at location: Point) {
         model.markerGraphic.geometry = location
+        Task {
+            await getAddressFromPoint(point: location)
+        }
     }
     
     @ViewBuilder
@@ -193,7 +196,8 @@ public struct ArcGisMapSearch: View {
             }
             // Starts the location display data source.
             try await locationDisplay.dataSource.start()
-           
+            locationDisplay.autoPanMode = .recenter
+            print("Started")
         }
         
         /// Stops the location data source.
