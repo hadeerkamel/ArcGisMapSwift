@@ -199,6 +199,7 @@ public struct ArcGisMapSearch: View {
                 locationManager.requestWhenInUseAuthorization()
                 print("req")
             }
+            locationManager.startUpdatingLocation()
             // Starts the location display data source.
             
             try await locationDisplay.dataSource.start()
