@@ -84,6 +84,7 @@ public struct ArcGisMapSearch: View {
             loc = Point(latitude: initLat, longitude: initLng)
         }else{
             loc = model.deviceLocationPoint
+            print(loc)
         }
         
         guard let loc = loc else{return}
