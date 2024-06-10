@@ -25,8 +25,8 @@ public struct ArcGisMapSearch: View {
     private let locationDisplay = LocationDisplay(dataSource: SystemLocationDataSource())
     
     @StateObject private var model = Model()
-    private var initLat: Double
-    private var initLng: Double
+    private var initLat: Double?
+    private var initLng: Double?
     
     public struct Result {
         var address: String = ""
@@ -36,7 +36,7 @@ public struct ArcGisMapSearch: View {
     }
     @Binding var result: Result
     
-    public init(apiKey: String, initialLatitude: Double, initialLongitude: Double, result: Binding<Result>) {
+    public init(apiKey: String, initialLatitude: Double?, initialLongitude: Double?, result: Binding<Result>) {
         ArcGISEnvironment.apiKey = APIKey(apiKey)
         initLat = initialLatitude
         initLng = initialLongitude
@@ -69,30 +69,35 @@ public struct ArcGisMapSearch: View {
             .overlay {
                 SearchViewOverlay()
             }
+            
         }
         .onAppear {
-            initLocation()
+           // initLocation()
+        }
+        .onDisappear {
+            model.stopLocationDataSource()
         }
     }
     private func setupCurrentLocation() async{
         print("current")
-        let locationManager = CLLocationManager()
-        if locationManager.authorizationStatus == .notDetermined {
-            locationManager.requestWhenInUseAuthorization()
+        guard model.locationDisplay.dataSource.status != .started else {
+            return
         }
-        
         do {
-            try await locationDisplay.dataSource.start()
+            try await model.startLocationDataSource()
             
-            locationDisplay.initialZoomScale = 40_000
-            locationDisplay.autoPanMode = .recenter
-            print(locationDisplay.location)
+            print(locationDisplay.location?.position.x)
         } catch {
             print("Faild to start detecting current location")
             print(error)
         }
+        
+        
+        
     }
     private func initLocation() {
+        guard let initLat, let initLng else{return}
+        
         let loc = Point(latitude: initLat, longitude: initLng)
         dropPin(at: loc)
         viewpoint = Viewpoint(center: loc, scale: 1e3)
@@ -170,9 +175,30 @@ public struct ArcGisMapSearch: View {
         let graphicsOverlay = GraphicsOverlay()
         let markerGraphic = Graphic(symbol: PictureMarkerSymbol(image: ImageProvider.loadImage(named: "marker")!))
         let locatorTask = LocatorTask(url: .geocodeServer)
+        let locationDisplay: LocationDisplay
+        
         
         init() {
             graphicsOverlay.addGraphic(markerGraphic)
+            let locationDisplay = LocationDisplay(dataSource: SystemLocationDataSource())
+            self.locationDisplay = locationDisplay
+        }
+        func startLocationDataSource() async throws {
+            // Requests location permission if it has not yet been determined.
+            let locationManager = CLLocationManager()
+            if locationManager.authorizationStatus == .notDetermined {
+                locationManager.requestWhenInUseAuthorization()
+            }
+            // Starts the location display data source.
+            try await locationDisplay.dataSource.start()
+            print(locationDisplay.location?.position.x)
+        }
+        
+        /// Stops the location data source.
+        func stopLocationDataSource() {
+            Task {
+                await locationDisplay.dataSource.stop()
+            }
         }
     }
 }

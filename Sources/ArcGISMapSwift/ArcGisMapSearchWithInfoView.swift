@@ -12,10 +12,10 @@ public struct ArcGisMapSearchWithInfoView: View {
     
     @Binding var result: ArcGisMapSearch.Result
     let apiKey_: String
-    let initLat: Double
-    let initLng: Double
+    let initLat: Double?
+    let initLng: Double?
     
-    public init(apiKey: String, initialLatitude: Double, initialLongitude: Double, result: Binding<ArcGisMapSearch.Result> ) {
+    public init(apiKey: String, initialLatitude: Double?, initialLongitude: Double?, result: Binding<ArcGisMapSearch.Result> ) {
         apiKey_ = apiKey
         _result = result
         initLat = initialLatitude
