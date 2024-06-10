@@ -9,6 +9,7 @@ import SwiftUI
 import ArcGIS
 import ArcGISToolkit
 import UIKit
+import CoreLocation
 
 let APIKEY = "AAPK02c4162a6c244595b0564d86007d14b9Wvyt7aoPDLSmphsm2gwYsNv3ov6GmtsaqObChcDJx0YGTThOj2FwZ8xQQatIp3ds"
 
@@ -21,6 +22,8 @@ public struct ArcGisMapSearch: View {
     @State private var identifyTapLocation: Point?
     @State private var calloutPlacement: CalloutPlacement?
     @ObservedObject private var locatorDataSource = LocatorSearchSource(name: "My Locator", maximumResults: 10, maximumSuggestions: 5)
+    private let locationDisplay = LocationDisplay(dataSource: SystemLocationDataSource())
+    
     @StateObject private var model = Model()
     private var initLat: Double
     private var initLng: Double
@@ -47,6 +50,7 @@ public struct ArcGisMapSearch: View {
                 viewpoint: viewpoint,
                 graphicsOverlays: [model.searchResultsOverlay, model.graphicsOverlay]
             )
+            .locationDisplay(locationDisplay)
             .onSingleTapGesture { screenPoint, tapLocation in
                 handleSingleTap(screenPoint: screenPoint, tapLocation: tapLocation)
             }
@@ -59,6 +63,9 @@ public struct ArcGisMapSearch: View {
             .task(id: identifyScreenPoint) {
                 await performIdentify(proxy: proxy)
             }
+            .task {
+                await setupCurrentLocation()
+            }
             .overlay {
                 SearchViewOverlay()
             }
@@ -67,7 +74,24 @@ public struct ArcGisMapSearch: View {
             initLocation()
         }
     }
-    
+    private func setupCurrentLocation() async{
+        print("current")
+        let locationManager = CLLocationManager()
+        if locationManager.authorizationStatus == .notDetermined {
+            locationManager.requestWhenInUseAuthorization()
+        }
+        
+        do {
+            try await locationDisplay.dataSource.start()
+            
+            locationDisplay.initialZoomScale = 40_000
+            locationDisplay.autoPanMode = .recenter
+            print(locationDisplay.location)
+        } catch {
+            print("Faild to start detecting current location")
+            print(error)
+        }
+    }
     private func initLocation() {
         let loc = Point(latitude: initLat, longitude: initLng)
         dropPin(at: loc)
