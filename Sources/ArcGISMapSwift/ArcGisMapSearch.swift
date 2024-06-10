@@ -34,12 +34,15 @@ public struct ArcGisMapSearch: View {
         public init() {}
     }
     @Binding var result: Result
+    @Binding var isRecenterCurrentLocation: Bool
     
-    public init(apiKey: String, initialLatitude: Double?, initialLongitude: Double?, result: Binding<Result>) {
+    public init(apiKey: String, initialLatitude: Double?, initialLongitude: Double?, result: Binding<Result>, isRecenterCurrentLocation: Binding<Bool>) {
+        
         ArcGISEnvironment.apiKey = APIKey(apiKey)
         initLat = initialLatitude
         initLng = initialLongitude
         _result = result
+        _isRecenterCurrentLocation = isRecenterCurrentLocation
     }
     
     public var body: some View {
@@ -65,6 +68,11 @@ public struct ArcGisMapSearch: View {
             .overlay {
                 SearchViewOverlay()
             }
+            .onChange(of: isRecenterCurrentLocation) { oldValue, newValue in
+                if isRecenterCurrentLocation {
+                    recenterDeviceLocation()
+                }
+            }
             
         }
         .onAppear {
@@ -73,7 +81,7 @@ public struct ArcGisMapSearch: View {
             
         }
     }
-    public func recenterDeviceLocation(){
+    private func recenterDeviceLocation(){
         print("called")
         guard let loc = model.deviceLocationPoint else{return}
         print(loc)
