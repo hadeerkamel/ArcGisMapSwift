@@ -213,6 +213,6 @@ public class ImageProvider {
 }
 
 #Preview {
-    ArcGisMapSearch(apiKey: APIKEY, initialLatitude: nil, initialLongitude: nil, result: .constant(ArcGisMapSearch.Result()))
+    ArcGisMapSearch(apiKey: APIKEY, initialLatitude: nil, initialLongitude: nil, result: .constant(ArcGisMapSearch.Result()), isRecenterCurrentLocation: .constant(false))
 }
 
