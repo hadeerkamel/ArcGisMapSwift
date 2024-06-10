@@ -68,8 +68,9 @@ public struct ArcGisMapSearch: View {
             
         }
         .onAppear {
-            initLocation()
             model.startLocationDataSource()
+            initLocation()
+            
         }
     }
     public func recenterDeviceLocation(){
@@ -203,6 +204,6 @@ public class ImageProvider {
 }
 
 #Preview {
-    ArcGisMapSearch(apiKey: APIKEY, initialLatitude: 30.043414, initialLongitude: 31.235338, result: .constant(ArcGisMapSearch.Result()))
+    ArcGisMapSearch(apiKey: APIKEY, initialLatitude: nil, initialLongitude: nil, result: .constant(ArcGisMapSearch.Result()))
 }
 
