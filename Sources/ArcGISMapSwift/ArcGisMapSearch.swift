@@ -22,7 +22,6 @@ public struct ArcGisMapSearch: View {
     @State private var identifyTapLocation: Point?
     @State private var calloutPlacement: CalloutPlacement?
     @ObservedObject private var locatorDataSource = LocatorSearchSource(name: "My Locator", maximumResults: 10, maximumSuggestions: 5)
-    private let locationDisplay = LocationDisplay(dataSource: SystemLocationDataSource())
     
     @StateObject private var model = Model()
     private var initLat: Double?
@@ -50,7 +49,6 @@ public struct ArcGisMapSearch: View {
                 viewpoint: viewpoint,
                 graphicsOverlays: [model.searchResultsOverlay, model.graphicsOverlay]
             )
-            .locationDisplay(locationDisplay)
             .onSingleTapGesture { screenPoint, tapLocation in
                 handleSingleTap(screenPoint: screenPoint, tapLocation: tapLocation)
             }
@@ -63,9 +61,7 @@ public struct ArcGisMapSearch: View {
             .task(id: identifyScreenPoint) {
                 await performIdentify(proxy: proxy)
             }
-            .task {
-                await setupCurrentLocation()
-            }
+            
             .overlay {
                 SearchViewOverlay()
             }
@@ -73,32 +69,8 @@ public struct ArcGisMapSearch: View {
         }
         .onAppear {
             initLocation()
+            model.startLocationDataSource()
         }
-        .onDisappear {
-            model.stopLocationDataSource()
-        }
-    }
-    private func setupCurrentLocation() async{
-        
-        guard model.locationDisplay.dataSource.status != .started else {
-            return
-        }
-        do {
-            try await model.startLocationDataSource()
-           
-            locationDisplay.autoPanMode = .recenter
-            
-            print("Started")
-           
-            print(locationDisplay)
-            print(locationDisplay.location)
-        } catch {
-            print("Faild to start detecting current location")
-            print(error)
-        }
-        
-        
-        
     }
     private func initLocation() {
         guard let initLat, let initLng else{return}
@@ -182,38 +154,22 @@ public struct ArcGisMapSearch: View {
         let graphicsOverlay = GraphicsOverlay()
         let markerGraphic = Graphic(symbol: PictureMarkerSymbol(image: ImageProvider.loadImage(named: "marker")!))
         let locatorTask = LocatorTask(url: .geocodeServer)
-        let locationDisplay: LocationDisplay
+        let locationManager: CLLocationManager
         
         
         init() {
             graphicsOverlay.addGraphic(markerGraphic)
-            let locationDisplay = LocationDisplay(dataSource: SystemLocationDataSource())
-            self.locationDisplay = locationDisplay
-            locationDisplay.autoPanMode = .recenter
+            locationManager = CLLocationManager()
         }
-        func startLocationDataSource() async throws {
-            // Requests location permission if it has not yet been determined.
-            let locationManager = CLLocationManager()
+        func startLocationDataSource() {
         
             if locationManager.authorizationStatus == .notDetermined {
                 locationManager.requestWhenInUseAuthorization()
-                print("req")
             }
             locationManager.startUpdatingLocation()
-            // Starts the location display data source.
-            
-            try await locationDisplay.dataSource.start()
-            print(locationDisplay.dataSource.status)
             print(locationManager.location)
-        
         }
         
-        /// Stops the location data source.
-        func stopLocationDataSource() {
-            Task {
-                await locationDisplay.dataSource.stop()
-            }
-        }
     }
 }
 
