@@ -88,6 +88,7 @@ public struct ArcGisMapSearch: View {
         print(loc)
         dropPin(at: loc)
         viewpoint = Viewpoint(center: loc, scale: 1e3)
+        queryCenter = loc
     }
     private func initLocation() {
         var loc: Point? = nil
