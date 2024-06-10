@@ -70,7 +70,9 @@ public struct ArcGisMapSearch: View {
             }
             .onChange(of: isRecenterCurrentLocation) { oldValue, newValue in
                 if isRecenterCurrentLocation {
-                    recenterDeviceLocation()
+                    Task{
+                        await recenterDeviceLocation(proxy: proxy)
+                    }
                 }
                 isRecenterCurrentLocation = false
             }
@@ -82,12 +84,13 @@ public struct ArcGisMapSearch: View {
             
         }
     }
-    private func recenterDeviceLocation(){
-        guard let loc = model.deviceLocationPoint else{return}
-        print(loc)
-        dropPin(at: loc)
-       // viewpoint = Viewpoint(center: loc, scale: 1e3)
-        queryCenter = loc
+    private func recenterDeviceLocation(proxy: MapViewProxy) async{
+           guard let loc = model.deviceLocationPoint else { return }
+           print(loc)
+           dropPin(at: loc)
+           viewpoint = Viewpoint(center: loc, scale: 1e3)
+            await proxy.setViewpoint(viewpoint!, duration: 0.5) // Animate to the new viewpoint
+           queryCenter = loc
     }
     private func initLocation() {
         var loc: Point? = nil
