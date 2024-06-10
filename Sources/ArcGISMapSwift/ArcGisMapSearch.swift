@@ -182,16 +182,20 @@ public struct ArcGisMapSearch: View {
             graphicsOverlay.addGraphic(markerGraphic)
             let locationDisplay = LocationDisplay(dataSource: SystemLocationDataSource())
             self.locationDisplay = locationDisplay
+            locationDisplay.autoPanMode = .recenter
         }
         func startLocationDataSource() async throws {
             // Requests location permission if it has not yet been determined.
             let locationManager = CLLocationManager()
+        
             if locationManager.authorizationStatus == .notDetermined {
                 locationManager.requestWhenInUseAuthorization()
+                print("req")
             }
             // Starts the location display data source.
             try await locationDisplay.dataSource.start()
-            print(locationDisplay.location?.position.x)
+            print("lat: "); print(locationDisplay.location?.position.x)
+            print("lng: "); print(locationDisplay.location?.position.y)
         }
         
         /// Stops the location data source.
