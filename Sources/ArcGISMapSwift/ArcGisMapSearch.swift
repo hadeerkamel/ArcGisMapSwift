@@ -74,8 +74,9 @@ public struct ArcGisMapSearch: View {
         }
     }
     public func recenterDeviceLocation(){
+        print("called")
         guard let loc = model.deviceLocationPoint else{return}
-        
+        print(loc)
         dropPin(at: loc)
         viewpoint = Viewpoint(center: loc, scale: 1e3)
     }
