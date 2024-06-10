@@ -72,10 +72,22 @@ public struct ArcGisMapSearch: View {
             model.startLocationDataSource()
         }
     }
-    private func initLocation() {
-        guard let initLat, let initLng else{return}
+    public func recenterDeviceLocation(){
+        guard let loc = model.deviceLocationPoint else{return}
         
-        let loc = Point(latitude: initLat, longitude: initLng)
+        dropPin(at: loc)
+        viewpoint = Viewpoint(center: loc, scale: 1e3)
+    }
+    private func initLocation() {
+        var loc: Point? = nil
+        if let initLat, let initLng{
+            loc = Point(latitude: initLat, longitude: initLng)
+        }else{
+            loc = model.deviceLocationPoint
+        }
+        
+        guard let loc = loc else{return}
+        
         dropPin(at: loc)
         viewpoint = Viewpoint(center: loc, scale: 1e3)
     }
@@ -155,7 +167,7 @@ public struct ArcGisMapSearch: View {
         let markerGraphic = Graphic(symbol: PictureMarkerSymbol(image: ImageProvider.loadImage(named: "marker")!))
         let locatorTask = LocatorTask(url: .geocodeServer)
         let locationManager: CLLocationManager
-        
+        var deviceLocationPoint: Point? = nil
         
         init() {
             graphicsOverlay.addGraphic(markerGraphic)
@@ -167,7 +179,10 @@ public struct ArcGisMapSearch: View {
                 locationManager.requestWhenInUseAuthorization()
             }
             locationManager.startUpdatingLocation()
-            print(locationManager.location)
+            if let location = locationManager.location{
+                let point = Point(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                deviceLocationPoint = point
+            }
         }
         
     }
