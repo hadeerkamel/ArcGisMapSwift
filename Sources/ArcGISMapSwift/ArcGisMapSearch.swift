@@ -85,8 +85,13 @@ public struct ArcGisMapSearch: View {
         }
         do {
             try await model.startLocationDataSource()
-            print("lat: "); print(locationDisplay.location?.position.x)
-            print("lng: "); print(locationDisplay.location?.position.y)
+           
+            locationDisplay.autoPanMode = .recenter
+            
+            print("Started")
+           
+            print(locationDisplay)
+            print(locationDisplay.location)
         } catch {
             print("Faild to start detecting current location")
             print(error)
@@ -195,9 +200,10 @@ public struct ArcGisMapSearch: View {
                 print("req")
             }
             // Starts the location display data source.
+            
             try await locationDisplay.dataSource.start()
-            locationDisplay.autoPanMode = .recenter
-            print("Started")
+            
+        
         }
         
         /// Stops the location data source.
