@@ -203,7 +203,8 @@ public struct ArcGisMapSearch: View {
             // Starts the location display data source.
             
             try await locationDisplay.dataSource.start()
-            
+            print(locationDisplay.dataSource.status)
+            print(locationManager.location)
         
         }
         
