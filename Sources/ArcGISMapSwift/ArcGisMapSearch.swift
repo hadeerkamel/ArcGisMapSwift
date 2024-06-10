@@ -72,6 +72,7 @@ public struct ArcGisMapSearch: View {
                 if isRecenterCurrentLocation {
                     recenterDeviceLocation()
                 }
+                isRecenterCurrentLocation = false
             }
             
         }
