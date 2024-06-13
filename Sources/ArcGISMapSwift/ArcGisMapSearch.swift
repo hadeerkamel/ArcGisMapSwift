@@ -69,14 +69,14 @@ public struct ArcGisMapSearch: View {
             .overlay {
                 SearchViewOverlay()
             }
-            .onChange(of: isRecenterCurrentLocation) { oldValue, newValue in
-                if isRecenterCurrentLocation {
-                    Task{
-                        await recenterDeviceLocation(proxy: proxy)
-                    }
-                }
-                isRecenterCurrentLocation = false
-            }
+//            .onChange(of: isRecenterCurrentLocation) { oldValue, newValue in
+//                if isRecenterCurrentLocation {
+//                    Task{
+//                        await recenterDeviceLocation(proxy: proxy)
+//                    }
+//                }
+//                isRecenterCurrentLocation = false
+//            }
             
         }
         .onAppear {
