@@ -8,13 +8,13 @@
 import UIKit
 import SwiftUI
 
-class ArcGisMapSearchViewController: UIViewController {
+public class ArcGisMapSearchViewController: UIViewController {
    
     var initialLatitude: Double?
     var initialLongitude: Double?
     var didDismissed: (ArcGisMapSearch.Result)->Void
     
-    init( initialLatitude: Double?, initialLongitude: Double?, didDismissed: @escaping (ArcGisMapSearch.Result)->Void) {
+    public init( initialLatitude: Double?, initialLongitude: Double?, didDismissed: @escaping (ArcGisMapSearch.Result)->Void) {
         self.initialLatitude = initialLatitude
         self.initialLongitude = initialLongitude
         self.didDismissed = didDismissed
@@ -25,7 +25,7 @@ class ArcGisMapSearchViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         let contentView = ArcGisMapSearchWithInfoView( initialLatitude: initialLatitude, initialLongitude: initialLongitude, didDismissed: didDismissed)
         let hostingController = UIHostingController(rootView: contentView)
