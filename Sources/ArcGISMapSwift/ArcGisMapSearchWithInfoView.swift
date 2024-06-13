@@ -52,6 +52,6 @@ public struct ArcGisMapSearchWithInfoView: View {
     }
 }
 
-#Preview {
-    ArcGisMapSearchWithInfoView(initialLatitude: 30.043414, initialLongitude: 31.235338, didDismissed: {_ in })
-}
+//#Preview {
+//    ArcGisMapSearchWithInfoView(initialLatitude: 30.043414, initialLongitude: 31.235338, didDismissed: {_ in })
+//}
