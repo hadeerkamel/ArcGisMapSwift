@@ -28,10 +28,10 @@ public struct ArcGisMapPoints: View {
                         viewModel.updatePoints()
                         viewModel.startLocationDataSource()
                     }
-//                    .onChange(of: points) { oldValue, newValue in
-//                        viewModel.points = points
-//                        viewModel.updatePoints()
-//                    }
+                    .onChange_(of: $points) { oldValue, newValue in
+                        viewModel.points = points
+                        viewModel.updatePoints()
+                    }
                 Button{
                     Task{
                         await viewModel.recenterDeviceLocation(proxy: proxy)
