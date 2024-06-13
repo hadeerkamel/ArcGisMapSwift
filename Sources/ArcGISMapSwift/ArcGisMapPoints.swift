@@ -7,6 +7,7 @@
 
 import SwiftUI
 import ArcGIS
+import CoreLocation
 
 public struct ArcGisMapPoints: View {
     
@@ -19,15 +20,35 @@ public struct ArcGisMapPoints: View {
     }
     
     public var body: some View {
-        MapView(map: viewModel.map, graphicsOverlays: [viewModel.graphicsOverlay])
-            .onAppear {
-                viewModel.points = points
-                viewModel.updatePoints()
+        ZStack(alignment: .bottomLeading){
+            MapViewReader { proxy in
+                MapView(map: viewModel.map, graphicsOverlays: [viewModel.graphicsOverlay, viewModel.deviceLocationGraphicsOverlay])
+                    .onAppear {
+                        viewModel.points = points
+                        viewModel.updatePoints()
+                        viewModel.startLocationDataSource()
+                    }
+                    .onChange(of: points) { oldValue, newValue in
+                        viewModel.points = points
+                        viewModel.updatePoints()
+                    }
+                Button{
+                    Task{
+                        await viewModel.recenterDeviceLocation(proxy: proxy)
+                    }
+                }label: {
+                    Image(uiImage: UIImage(named: "myLocation", in: .module, with: nil) ?? UIImage())
+                        .resizable()
+                        .tint(Color("mainColor", bundle: .module))
+                        .padding(5)
+                        .frame(width: 40, height: 40)
+                        .background(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
+                .padding(.leading, 15)
+                .padding(.bottom, 15)
             }
-            .onChange(of: points) { oldValue, newValue in
-                viewModel.points = points
-                viewModel.updatePoints()
-            }
+        }
     }
 }
 
@@ -44,14 +65,54 @@ class MapViewModel: ObservableObject {
     @Published var points: [PointCoordinate]
     @Published var map: Map
     var graphicsOverlay: GraphicsOverlay
+    var deviceLocationGraphicsOverlay: GraphicsOverlay
+    let locationManager: CLLocationManager
+    var deviceLocationPoint: Point? = nil
     
     init(points: [PointCoordinate]) {
         self.points = points
         self.map = Map(basemapStyle: .osmStandard)
         self.graphicsOverlay = GraphicsOverlay()
-        self.map.initialViewpoint = Viewpoint(latitude: 30.078747, longitude: 31.203802, scale: 1e3)
+        self.deviceLocationGraphicsOverlay = GraphicsOverlay()
+        locationManager = CLLocationManager()
+        
         ArcGISEnvironment.apiKey = APIKey(APIKEY)
+        
     }
+    
+   
+    func startLocationDataSource() {
+    
+        if locationManager.authorizationStatus == .notDetermined {
+            locationManager.requestWhenInUseAuthorization()
+        }
+        locationManager.startUpdatingLocation()
+        if let location = locationManager.location{
+            let point = Point(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            deviceLocationPoint = point
+            
+            initMapOnCurrentLocation()
+        }
+    }
+    private func initMapOnCurrentLocation(){
+        
+        if let p = deviceLocationPoint{
+            
+            self.map.initialViewpoint = Viewpoint(center: p, scale: 1e3)
+            
+            guard let markerImage = UIImage(named: "current_location_indicator", in: .module, with: nil) else { return }
+            let markerSymbol = PictureMarkerSymbol(image: markerImage)
+            let pointGraphic = Graphic(geometry: p, symbol: markerSymbol)
+            deviceLocationGraphicsOverlay.addGraphic(pointGraphic)
+        }
+    }
+     func recenterDeviceLocation(proxy: MapViewProxy) async{
+           guard let loc = deviceLocationPoint else { return }
+           
+         await proxy.setViewpoint(map.initialViewpoint!, duration: 0.5)
+    }
+    
+   
     
     func updatePoints() {
         let points = self.points.map { Point(x: $0.lng, y: $0.lat, spatialReference: .wgs84) }
@@ -72,7 +133,7 @@ class MapViewModel: ObservableObject {
     }
     
     func addPoint(point: Point) {
-        guard let markerImage = ImageProvider.loadImage(named: "marker") else { return }
+        guard let markerImage = UIImage(named: "marker", in: .module, with: nil) else { return }
         let markerSymbol = PictureMarkerSymbol(image: markerImage)
         let pointGraphic = Graphic(geometry: point, symbol: markerSymbol)
         graphicsOverlay.addGraphic(pointGraphic)
@@ -80,7 +141,7 @@ class MapViewModel: ObservableObject {
     
     func addLine(p1: Point, p2: Point) {
         let polyline = Polyline(points: [p1, p2])
-        let polylineSymbol = SimpleLineSymbol(style: .solid, color: .green, width: 10.0)
+        let polylineSymbol = SimpleLineSymbol(style: .solid, color: UIColor(Color("mainColor", bundle: .module)), width: 10.0)
         let polylineGraphic = Graphic(geometry: polyline, symbol: polylineSymbol)
         graphicsOverlay.addGraphic(polylineGraphic)
     }

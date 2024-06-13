@@ -36,9 +36,8 @@ public struct ArcGisMapSearch: View {
     @Binding var result: Result
     @Binding var isRecenterCurrentLocation: Bool
     
-    public init(apiKey: String, initialLatitude: Double?, initialLongitude: Double?, result: Binding<Result>, isRecenterCurrentLocation: Binding<Bool>) {
+    public init(initialLatitude: Double?, initialLongitude: Double?, result: Binding<Result>, isRecenterCurrentLocation: Binding<Bool>) {
         
-        ArcGISEnvironment.apiKey = APIKey(apiKey)
         initLat = initialLatitude
         initLng = initialLongitude
         _result = result
@@ -52,6 +51,7 @@ public struct ArcGisMapSearch: View {
                 viewpoint: viewpoint,
                 graphicsOverlays: [model.searchResultsOverlay, model.graphicsOverlay]
             )
+            
             .onSingleTapGesture { screenPoint, tapLocation in
                 handleSingleTap(screenPoint: screenPoint, tapLocation: tapLocation)
             }
@@ -61,6 +61,7 @@ public struct ArcGisMapSearch: View {
             .callout(placement: $calloutPlacement.animation()) { placement in
                 Text(placement.geoElement?.attributes["Match_addr"] as? String ?? "Unknown Address").padding()
             }
+            
             .task(id: identifyScreenPoint) {
                 await performIdentify(proxy: proxy)
             }
@@ -118,11 +119,6 @@ public struct ArcGisMapSearch: View {
     
     private func viewpointChanged(_ center: Point) {
         queryCenter = center
-//        Task {
-//            if let center = queryCenter {
-//                await getAddressFromPoint(point: center)
-//            }
-//        }
     }
     
     private func performIdentify(proxy: MapViewProxy) async {
@@ -146,6 +142,8 @@ public struct ArcGisMapSearch: View {
             let geocodeResults = try await model.locatorTask.reverseGeocode(forLocation: normalizedPoint, parameters: params)
             if let address = geocodeResults.first?.attributes["LongLabel"] as? String {
                 result.address = address
+                result.latitude = point.y
+                result.longitude = point.x
                 print(address)
             }
         } catch {
@@ -179,7 +177,7 @@ public struct ArcGisMapSearch: View {
         let map = Map(basemapStyle: .osmStandard)
         let searchResultsOverlay = GraphicsOverlay()
         let graphicsOverlay = GraphicsOverlay()
-        let markerGraphic = Graphic(symbol: PictureMarkerSymbol(image: ImageProvider.loadImage(named: "marker")!))
+        let markerGraphic = Graphic(symbol: PictureMarkerSymbol(image: UIImage(named: "marker", in: .module, with: nil) ?? UIImage()))
         let locatorTask = LocatorTask(url: .geocodeServer)
         let locationManager: CLLocationManager
         var deviceLocationPoint: Point? = nil
@@ -209,14 +207,14 @@ private extension URL {
     }
 }
 
-public class ImageProvider {
-    public static func loadImage(named imageName: String) -> UIImage? {
-        let bundle = Bundle.module
-        return UIImage(named: imageName, in: bundle, compatibleWith: nil)
-    }
-}
+//public class ImageProvider {
+//    public static func loadImage(named imageName: String) -> UIImage? {
+//        let bundle = Bundle.module
+//        return UIImage(named: imageName, in: bundle, compatibleWith: nil)
+//    }
+//}
 
 #Preview {
-    ArcGisMapSearch(apiKey: APIKEY, initialLatitude: nil, initialLongitude: nil, result: .constant(ArcGisMapSearch.Result()), isRecenterCurrentLocation: .constant(false))
+    ArcGisMapSearch(initialLatitude: nil, initialLongitude: nil, result: .constant(ArcGisMapSearch.Result()), isRecenterCurrentLocation: .constant(false))
 }
 
