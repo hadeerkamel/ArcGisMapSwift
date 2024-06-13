@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "ArcGISMapSwift",
     platforms: [
-           .iOS(.v15)
+           .iOS(.v16)
        ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -17,11 +17,11 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/Esri/arcgis-maps-sdk-swift",
-            from: "200.4.0" // Use the appropriate version
+            from: "200.2.0" // Use the appropriate version
         ),
         .package(
             url: "https://github.com/Esri/arcgis-maps-sdk-swift-toolkit",
-            from: "200.4.0" // Use the appropriate version
+            from: "200.2.0" // Use the appropriate version
         ),
     ],
     targets: [
