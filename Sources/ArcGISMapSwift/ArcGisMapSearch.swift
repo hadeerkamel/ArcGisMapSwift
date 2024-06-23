@@ -225,7 +225,7 @@ private extension URL {
 //    }
 //}
 
-#Preview {
-    ArcGisMapSearch(initialLatitude: nil, initialLongitude: nil, result: .constant(ArcGisMapSearch.Result()), isRecenterCurrentLocation: .constant(false))
-}
+//#Preview {
+//    ArcGisMapSearch(initialLatitude: nil, initialLongitude: nil, result: .constant(ArcGisMapSearch.Result()), isRecenterCurrentLocation: .constant(false))
+//}
 

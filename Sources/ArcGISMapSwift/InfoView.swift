@@ -76,7 +76,7 @@ public struct Infoview: View {
     }
 }
 
-#Preview {
-
-    Infoview(country: .constant(""),address: .constant(""), currentLocationTapped: {}, confirmTapped: {})
-}
+//#Preview {
+//
+//    Infoview(country: .constant(""),address: .constant(""), currentLocationTapped: {}, confirmTapped: {})
+//}
