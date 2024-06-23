@@ -12,15 +12,15 @@ struct OnChangeModifier<T: Equatable>: ViewModifier {
     let action: (T, T) -> Void
     
     func body(content: Content) -> some View {
-        if #available(iOS 17, *) {
-            content.onChange(of: value) { oldValue, newValue in
-                action(value, newValue)
-            }
-        } else {
+//        if #available(iOS 17, *) {
+//            content.onChange(of: value) { oldValue, newValue in
+//                action(value, newValue)
+//            }
+//        } else {
             content.onChange(of: value) { newValue in
                 action(value, newValue)
             }
-        }
+       // }
     }
 }
 

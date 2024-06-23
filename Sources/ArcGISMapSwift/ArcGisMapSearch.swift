@@ -42,6 +42,8 @@ public struct ArcGisMapSearch: View {
         initLng = initialLongitude
         _result = result
         _isRecenterCurrentLocation = isRecenterCurrentLocation
+        ArcGISEnvironment.apiKey = APIKey("AAPK02c4162a6c244595b0564d86007d14b9Wvyt7aoPDLSmphsm2gwYsNv3ov6GmtsaqObChcDJx0YGTThOj2FwZ8xQQatIp3ds")
+        
     }
     
     public var body: some View {
@@ -214,7 +216,7 @@ private extension URL {
 //    }
 //}
 
-//#Preview {
-//    ArcGisMapSearch(initialLatitude: nil, initialLongitude: nil, result: .constant(ArcGisMapSearch.Result()), isRecenterCurrentLocation: .constant(false))
-//}
+#Preview {
+    ArcGisMapSearch(initialLatitude: nil, initialLongitude: nil, result: .constant(ArcGisMapSearch.Result()), isRecenterCurrentLocation: .constant(false))
+}
 
