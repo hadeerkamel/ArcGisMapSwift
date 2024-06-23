@@ -89,7 +89,7 @@ public struct ArcGisMapSearch: View {
            guard let loc = model.deviceLocationPoint else { return }
            print(loc)
            dropPin(at: loc)
-           viewpoint = Viewpoint(center: loc, scale: 1e3)
+           viewpoint = Viewpoint(center: loc, scale: 1e4)
             await proxy.setViewpoint(viewpoint!, duration: 0.5) // Animate to the new viewpoint
            queryCenter = loc
     }
@@ -105,7 +105,7 @@ public struct ArcGisMapSearch: View {
         guard let loc = loc else{return}
         
         dropPin(at: loc)
-        viewpoint = Viewpoint(center: loc, scale: 1e3)
+        viewpoint = Viewpoint(center: loc, scale: 1e4)
     }
     
     private func handleSingleTap(screenPoint: CGPoint, tapLocation: Point) {
@@ -217,4 +217,4 @@ private extension URL {
 //#Preview {
 //    ArcGisMapSearch(initialLatitude: nil, initialLongitude: nil, result: .constant(ArcGisMapSearch.Result()), isRecenterCurrentLocation: .constant(false))
 //}
-//
+

@@ -98,7 +98,7 @@ class MapViewModel: ObservableObject {
         
         if let p = deviceLocationPoint{
             
-            self.map.initialViewpoint = Viewpoint(center: p, scale: 1e3)
+            self.map.initialViewpoint = Viewpoint(center: p, scale: 1e4)
             
             guard let markerImage = UIImage(named: "current_location_indicator", in: .module, with: nil) else { return }
             let markerSymbol = PictureMarkerSymbol(image: markerImage)

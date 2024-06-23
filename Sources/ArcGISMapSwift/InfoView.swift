@@ -44,7 +44,7 @@ public struct Infoview: View {
                 confirmTapped()
             }label: {
                 VStack{
-                    Text(NSLocalizedString("Confirm Location", comment: ""))
+                    Text(NSLocalizedString("Confirm Location", bundle: .module, comment: ""))
                         .foregroundColor(.white)
                 }
                 .frame(maxWidth: .infinity)
