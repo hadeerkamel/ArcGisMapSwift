@@ -35,5 +35,15 @@ public class ArcGisMapSearchViewController: UIViewController {
         hostingController.didMove(toParent: self)
         
     }
+    
+    static public func presentAsFullScreen(rootVC: UIViewController, initLat: Double?, initLng: Double?) async -> ArcGisMapSearch.Result {
+           return await withCheckedContinuation { continuation in
+               let vc = ArcGisMapSearchViewController(initialLatitude: initLat, initialLongitude: initLng) { result in
+                   continuation.resume(returning: result)
+               }
+               vc.modalPresentationStyle = .overFullScreen
+               rootVC.present(vc, animated: true)
+           }
+       }
 }
 

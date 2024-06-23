@@ -143,7 +143,7 @@ public struct ArcGisMapSearch: View {
         
         do {
             let geocodeResults = try await model.locatorTask.reverseGeocode(forLocation: normalizedPoint, parameters: params)
-            print(geocodeResults.first?.attributes)
+          //  print(geocodeResults.first?.attributes)
             if let address = geocodeResults.first?.attributes["LongLabel"] as? String {
                 result.address = address
                 result.latitude = point.y
