@@ -26,12 +26,13 @@ public struct ArcGisMapSearchWithInfoView: View {
     }
     
     public var body: some View {
-        
+        ZStack(alignment: .topTrailing){
+           
             ZStack(alignment: .bottom){
                 
                 ArcGisMapSearch(initialLatitude: initLat , initialLongitude: initLng , result: $result, isRecenterCurrentLocation: $isRecenterCurrentLocation)
-                   
-                Infoview(address: $result.address,
+                
+                Infoview(country: $result.country,address: $result.address,
                          currentLocationTapped: {
                     isRecenterCurrentLocation = true
                 },
@@ -39,14 +40,29 @@ public struct ArcGisMapSearchWithInfoView: View {
                     didDismissed(result)
                     dismiss()
                 }
-                    
+                         
                 )
                 .padding(.bottom)
             }
             .frame(maxHeight: .infinity)
             .ignoresSafeArea(.keyboard)
-          
-     
+            
+            
+            Button{
+               dismiss()
+            }label: {
+                VStack{
+                    Image(NSLocalizedString("left-arrow",bundle: .module, comment: ""), bundle: .module)
+                        .resizable()
+                        .padding(2)
+                    
+                }
+                .background(.white.opacity(0.9))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .frame(width: 35, height: 35)
+            }
+            .padding(21)
+        }
         
         
     }

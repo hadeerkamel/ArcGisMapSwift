@@ -8,6 +8,7 @@
 import SwiftUI
 
 public struct Infoview: View {
+    @Binding var country: String
     @Binding var address: String
     var currentLocationTapped: ()->Void
     var confirmTapped: ()->Void
@@ -24,18 +25,31 @@ public struct Infoview: View {
                     .frame(width: 40, height: 40)
                     .background(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
+                
             }
             .padding(.leading, 20)
             .padding(.bottom, 10)
             
-            
-            VStack(){
-                Text(address)
-                    .padding(20)
+            HStack(alignment: .center){
+                Image("location", bundle: .module)
+                    .foregroundColor(Color("mainColor", bundle: .module))
+                    .padding(.leading)
+                    
+                VStack(alignment: .leading){
+                    
+                    Text(country)
+                        .padding(0)
+                        .font(.headline)
+                    Text(address)
+                        .padding(0)
+                        .padding(.bottom, 5)
+                }
+                Spacer()
             }
+            
             .frame(maxWidth: .infinity)
-            .frame(height: 100)
-            .background(.white)
+            //.frame(height: 100)
+            .background(.white.opacity(0.9))
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .padding(.leading, 20)
             .padding(.trailing, 20)
@@ -58,10 +72,11 @@ public struct Infoview: View {
             
         }
         .frame(maxWidth: .infinity)
+        //.background(Color.red)
     }
 }
 
-//#Preview {
-//
-//    Infoview(address: .constant(""), currentLocationTapped: {}, confirmTapped: {})
-//}
+#Preview {
+
+    Infoview(country: .constant(""),address: .constant(""), currentLocationTapped: {}, confirmTapped: {})
+}

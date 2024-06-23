@@ -28,6 +28,7 @@ public struct ArcGisMapSearch: View {
     private var initLng: Double?
     
     public struct Result {
+        var country: String = ""
         var address: String = ""
         var latitude: Double = 0.0
         var longitude: Double = 0.0
@@ -142,11 +143,15 @@ public struct ArcGisMapSearch: View {
         
         do {
             let geocodeResults = try await model.locatorTask.reverseGeocode(forLocation: normalizedPoint, parameters: params)
+            print(geocodeResults.first?.attributes)
             if let address = geocodeResults.first?.attributes["LongLabel"] as? String {
                 result.address = address
                 result.latitude = point.y
                 result.longitude = point.x
                 print(address)
+            }
+            if let country = geocodeResults.first?.attributes["CntryName"] as? String {
+                result.country = country
             }
         } catch {
             print(error)
@@ -162,17 +167,21 @@ public struct ArcGisMapSearch: View {
     
     @ViewBuilder
     private func SearchViewOverlay() -> some View {
-        SearchView(sources: [locatorDataSource], viewpoint: $viewpoint)
-            .resultsOverlay(model.searchResultsOverlay)
-            .queryCenter($queryCenter)
-            .geoViewExtent($geoViewExtent)
-            .isGeoViewNavigating($isGeoViewNavigating)
-            .onQueryChanged { query in
-                if query.isEmpty {
-                    calloutPlacement = nil
+        HStack{
+            SearchView(sources: [locatorDataSource], viewpoint: $viewpoint)
+                .resultsOverlay(model.searchResultsOverlay)
+                .queryCenter($queryCenter)
+                .geoViewExtent($geoViewExtent)
+                .isGeoViewNavigating($isGeoViewNavigating)
+                .onQueryChanged { query in
+                    if query.isEmpty {
+                        calloutPlacement = nil
+                    }
                 }
-            }
-            .padding()
+                .padding()
+                .padding(.trailing,60)
+            
+        }
     }
     
     private class Model: ObservableObject {

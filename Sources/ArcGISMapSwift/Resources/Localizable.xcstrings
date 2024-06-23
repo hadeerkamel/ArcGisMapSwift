@@ -17,6 +17,23 @@
           }
         }
       }
+    },
+    "left-arrow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "right-arrow"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "left-arrow"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
