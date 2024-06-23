@@ -33,7 +33,8 @@ let package = Package(
                             .product(name: "ArcGIS", package: "arcgis-maps-sdk-swift"),
                             .product(name: "ArcGISToolkit", package: "arcgis-maps-sdk-swift-toolkit")
                         ],
-            resources: [.process("Resources/Assets.xcassets")]
+            resources: [.process("Resources/Assets.xcassets"),
+                        .process("Resources/Localizable.xcstrings")]
         ),
         .testTarget(
             name: "ArcGISMapSwiftTests",
