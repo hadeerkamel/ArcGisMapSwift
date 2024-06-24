@@ -26,8 +26,8 @@ public struct ArcGisMapSearch: View {
     @StateObject private var model = Model()
     private var initLat: Double?
     private var initLng: Double?
-    
-    public struct Result {
+    @State private var selectedSearchResultPoint: Point?
+    public struct Result: Encodable {
         var country: String = ""
         var address: String = ""
         var latitude: Double = 0.0
@@ -38,7 +38,7 @@ public struct ArcGisMapSearch: View {
     @Binding var isRecenterCurrentLocation: Bool
     
     public init(initialLatitude: Double?, initialLongitude: Double?, result: Binding<Result>, isRecenterCurrentLocation: Binding<Bool>) {
-        
+
         initLat = initialLatitude
         initLng = initialLongitude
         _result = result
@@ -54,7 +54,6 @@ public struct ArcGisMapSearch: View {
                 viewpoint: viewpoint,
                 graphicsOverlays: [model.searchResultsOverlay, model.graphicsOverlay]
             )
-            
             .onSingleTapGesture { screenPoint, tapLocation in
                 handleSingleTap(screenPoint: screenPoint, tapLocation: tapLocation)
             }
@@ -178,10 +177,12 @@ public struct ArcGisMapSearch: View {
                         calloutPlacement = nil
                     }
                 }
+                
                 .padding()
                 .padding(.trailing,60)
             
         }
+        
     }
     
     private class Model: ObservableObject {
@@ -208,6 +209,14 @@ public struct ArcGisMapSearch: View {
                 deviceLocationPoint = point
             }
         }
+        func updateSelectedResultOverlay(with point: Point) {
+                searchResultsOverlay.removeAllGraphics()
+            let customPinImage = UIImage(named: "marker", in: .module, with: nil) ?? UIImage()
+                let customPinSymbol = PictureMarkerSymbol(image: customPinImage)
+                let graphic = Graphic(geometry: point, symbol: customPinSymbol)
+                searchResultsOverlay.addGraphic(graphic)
+            }
+
         
     }
 }
@@ -228,4 +237,7 @@ private extension URL {
 //#Preview {
 //    ArcGisMapSearch(initialLatitude: nil, initialLongitude: nil, result: .constant(ArcGisMapSearch.Result()), isRecenterCurrentLocation: .constant(false))
 //}
+//
+//
+
 

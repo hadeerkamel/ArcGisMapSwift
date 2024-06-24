@@ -39,6 +39,7 @@ public struct Infoview: View {
                     
                     Text(country)
                         .padding(0)
+                        .padding(.top, 5)
                         .font(.headline)
                     Text(address)
                         .padding(0)
@@ -72,7 +73,7 @@ public struct Infoview: View {
             
         }
         .frame(maxWidth: .infinity)
-        //.background(Color.red)
+    //    .background(Color.red)
     }
 }
 

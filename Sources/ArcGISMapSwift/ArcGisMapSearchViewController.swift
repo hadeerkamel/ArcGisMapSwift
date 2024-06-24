@@ -36,10 +36,19 @@ public class ArcGisMapSearchViewController: UIViewController {
         
     }
     
-    static public func presentAsFullScreen(rootVC: UIViewController, initLat: Double?, initLng: Double?) async -> ArcGisMapSearch.Result {
+    static public func presentAsFullScreen(rootVC: UIViewController, initLat: Double?, initLng: Double?) async -> String {
            return await withCheckedContinuation { continuation in
                let vc = ArcGisMapSearchViewController(initialLatitude: initLat, initialLongitude: initLng) { result in
-                   continuation.resume(returning: result)
+                   do {
+                       let jsonData = try JSONEncoder().encode(result)
+                       if let jsonString = String(data: jsonData, encoding: .utf8) {
+                           print(jsonString)
+                           continuation.resume(returning: jsonString)
+                       }
+                   } catch {
+                       print("Error encoding JSON: \(error)")
+                   }
+                   
                }
                vc.modalPresentationStyle = .overFullScreen
                rootVC.present(vc, animated: true)
