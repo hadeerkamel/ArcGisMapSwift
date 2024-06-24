@@ -54,5 +54,6 @@ public class ArcGisMapSearchViewController: UIViewController {
                rootVC.present(vc, animated: true)
            }
        }
+    
 }
 

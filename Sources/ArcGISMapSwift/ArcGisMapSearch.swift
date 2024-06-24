@@ -14,7 +14,7 @@ import CoreLocation
 let APIKEY = "AAPK02c4162a6c244595b0564d86007d14b9Wvyt7aoPDLSmphsm2gwYsNv3ov6GmtsaqObChcDJx0YGTThOj2FwZ8xQQatIp3ds"
 
 public struct ArcGisMapSearch: View {
-    @State private var viewpoint: Viewpoint? = Viewpoint(center: Point(x: -93.258133, y: 44.986656, spatialReference: .wgs84), scale: 1e3)
+    @State private var viewpoint: Viewpoint? = Viewpoint(center: Point(x: -93.258133, y: 44.986656, spatialReference: .wgs84), scale: 1e4)
     @State private var isGeoViewNavigating = false
     @State private var geoViewExtent: Envelope?
     @State private var queryCenter: Point?
@@ -26,7 +26,7 @@ public struct ArcGisMapSearch: View {
     @StateObject private var model = Model()
     private var initLat: Double?
     private var initLng: Double?
-    @State private var selectedSearchResultPoint: Point?
+   // @State private var selectedSearchResultPoint: Point?
     public struct Result: Encodable {
         var country: String = ""
         var address: String = ""
@@ -36,14 +36,17 @@ public struct ArcGisMapSearch: View {
     }
     @Binding var result: Result
     @Binding var isRecenterCurrentLocation: Bool
-    
+    @State var lastSearchPoint: Point? = nil
     public init(initialLatitude: Double?, initialLongitude: Double?, result: Binding<Result>, isRecenterCurrentLocation: Binding<Bool>) {
 
         initLat = initialLatitude
         initLng = initialLongitude
         _result = result
         _isRecenterCurrentLocation = isRecenterCurrentLocation
-        ArcGISEnvironment.apiKey = APIKey("AAPK02c4162a6c244595b0564d86007d14b9Wvyt7aoPDLSmphsm2gwYsNv3ov6GmtsaqObChcDJx0YGTThOj2FwZ8xQQatIp3ds")
+        //ArcGISEnvironment.apiKey = APIKey("AAPK02c4162a6c244595b0564d86007d14b9Wvyt7aoPDLSmphsm2gwYsNv3ov6GmtsaqObChcDJx0YGTThOj2FwZ8xQQatIp3ds")
+        
+        UserDefaults.standard.set(["ar"], forKey: "AppleLanguages")
+        UserDefaults.standard.synchronize()
         
     }
     
@@ -57,9 +60,20 @@ public struct ArcGisMapSearch: View {
             .onSingleTapGesture { screenPoint, tapLocation in
                 handleSingleTap(screenPoint: screenPoint, tapLocation: tapLocation)
             }
-            .onNavigatingChanged { isGeoViewNavigating = $0 }
-            .onViewpointChanged(kind: .centerAndScale) { viewpointChanged($0.targetGeometry.extent.center) }
-            .onVisibleAreaChanged { geoViewExtent = $0.extent }
+            .onNavigatingChanged {isGeoViewNavigating = $0 }
+            .onViewpointChanged(kind: .centerAndScale) {
+                if let searchPoint = model.searchResultsOverlay.graphics.first?.geometry as? Point, lastSearchPoint != searchPoint{
+                    lastSearchPoint = searchPoint
+                    model.updateSelectedResultOverlay(with: searchPoint)
+                    Task{
+                        await getAddressFromPoint(point: searchPoint)
+                    }
+                    
+
+                }
+                
+                viewpointChanged($0.targetGeometry.extent.center) }
+            .onVisibleAreaChanged {geoViewExtent = $0.extent }
             .callout(placement: $calloutPlacement.animation()) { placement in
                 Text(placement.geoElement?.attributes["Match_addr"] as? String ?? "Unknown Address").padding()
             }
@@ -177,7 +191,7 @@ public struct ArcGisMapSearch: View {
                         calloutPlacement = nil
                     }
                 }
-                
+
                 .padding()
                 .padding(.trailing,60)
             
@@ -210,6 +224,7 @@ public struct ArcGisMapSearch: View {
             }
         }
         func updateSelectedResultOverlay(with point: Point) {
+            graphicsOverlay.removeAllGraphics()
                 searchResultsOverlay.removeAllGraphics()
             let customPinImage = UIImage(named: "marker", in: .module, with: nil) ?? UIImage()
                 let customPinSymbol = PictureMarkerSymbol(image: customPinImage)
