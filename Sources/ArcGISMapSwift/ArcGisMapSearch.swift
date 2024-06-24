@@ -45,8 +45,8 @@ public struct ArcGisMapSearch: View {
         _isRecenterCurrentLocation = isRecenterCurrentLocation
         //ArcGISEnvironment.apiKey = APIKey("AAPK02c4162a6c244595b0564d86007d14b9Wvyt7aoPDLSmphsm2gwYsNv3ov6GmtsaqObChcDJx0YGTThOj2FwZ8xQQatIp3ds")
         
-        UserDefaults.standard.set(["ar"], forKey: "AppleLanguages")
-        UserDefaults.standard.synchronize()
+       // UserDefaults.standard.set(["ar"], forKey: "AppleLanguages")
+        //UserDefaults.standard.synchronize()
         
     }
     
