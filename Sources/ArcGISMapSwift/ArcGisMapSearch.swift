@@ -173,6 +173,9 @@ public struct ArcGisMapSearch: View {
     }
     
     private func dropPin(at location: Point) {
+        model.searchResultsOverlay.removeAllGraphics()
+        model.graphicsOverlay.removeAllGraphics()
+        model.graphicsOverlay.addGraphic(model.markerGraphic)
         model.markerGraphic.geometry = location
         Task {
             await getAddressFromPoint(point: location)
@@ -228,7 +231,7 @@ public struct ArcGisMapSearch: View {
         }
         func updateSelectedResultOverlay(with point: Point) {
             graphicsOverlay.removeAllGraphics()
-                searchResultsOverlay.removeAllGraphics()
+            searchResultsOverlay.removeAllGraphics()
             let customPinImage = UIImage(named: "marker", in: .module, with: nil) ?? UIImage()
                 let customPinSymbol = PictureMarkerSymbol(image: customPinImage)
                 let graphic = Graphic(geometry: point, symbol: customPinSymbol)
