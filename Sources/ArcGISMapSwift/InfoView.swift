@@ -16,6 +16,7 @@ public struct Infoview: View {
     public var body: some View {
         VStack(alignment: .leading){
             Button{
+                print("----- Current Location Tapped ------")
                 currentLocationTapped()
             }label: {
                 Image(uiImage: UIImage(named: "myLocation", in: .module, with: nil) ?? UIImage())
@@ -35,7 +36,7 @@ public struct Infoview: View {
                     .foregroundColor(Color("mainColor", bundle: .module))
                     .padding(.leading)
                     
-                VStack(alignment: .leading){
+                VStack(alignment: AGConfig.locale == "en" ? .leading : .trailing){
                     
                     Text(country)
                         .padding(0)
@@ -59,7 +60,7 @@ public struct Infoview: View {
                 confirmTapped()
             }label: {
                 VStack{
-                    Text(NSLocalizedString("Confirm Location", bundle: .module, comment: ""))
+                    Text(AGConfig.locale == "en" ? "Confirm Location" : "تأكيد الموقع" )
                         .foregroundColor(.white)
                 }
                 .frame(maxWidth: .infinity)

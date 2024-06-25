@@ -86,6 +86,7 @@ public struct ArcGisMapSearch: View {
                 SearchViewOverlay()
             }
             .onChange_(of: $isRecenterCurrentLocation) { oldValue, newValue in
+                print("----- Current Location on change ------")
                 if isRecenterCurrentLocation {
                     Task{
                         await recenterDeviceLocation(proxy: proxy)
@@ -191,7 +192,6 @@ public struct ArcGisMapSearch: View {
                         calloutPlacement = nil
                     }
                 }
-
                 .padding()
                 .padding(.trailing,60)
             

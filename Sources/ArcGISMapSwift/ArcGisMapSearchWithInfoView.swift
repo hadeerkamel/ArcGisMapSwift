@@ -34,6 +34,7 @@ public struct ArcGisMapSearchWithInfoView: View {
                 
                 Infoview(country: $result.country,address: $result.address,
                          currentLocationTapped: {
+                    print("----- Current Location info view clusure ------")
                     isRecenterCurrentLocation = true
                 },
                          confirmTapped: {
@@ -52,7 +53,7 @@ public struct ArcGisMapSearchWithInfoView: View {
                dismiss()
             }label: {
                 VStack{
-                    Image(NSLocalizedString("left-arrow",bundle: .module, comment: ""), bundle: .module)
+                    Image(AGConfig.locale == "en" ? "left-arrow" : "right-arrow")
                         .resizable()
                         .padding(2)
                     
