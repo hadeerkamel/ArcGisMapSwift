@@ -56,7 +56,7 @@ public struct Infoview: View {
                 if AGConfig.locale == "ar" {
                     Image("location", bundle: .module)
                         .foregroundColor(Color("mainColor", bundle: .module))
-                        .padding(.leading)
+                        .padding(.trailing)
                 }
                 if AGConfig.locale == "en" {
                     Spacer()
