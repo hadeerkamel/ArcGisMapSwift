@@ -30,13 +30,19 @@ public struct ArcGisMapPoints: View {
                 MapView(map: viewModel.map, graphicsOverlays: [viewModel.graphicsOverlay, viewModel.deviceLocationGraphicsOverlay])
                 
                     .callout(placement: $calloutPlacement.animation()) { placement in
-                       
-                        Text(placement.geoElement?.attributes["Match_addr"] as? String ?? "Unknown Address").padding()
+                        Text(viewModel.addresses[ placement.geoElement?.geometry as? Point  ] ?? "")
+                            .padding(10)
                     }
-                    .task(id: identifyScreenPoint) {
-                        await performIdentify(proxy: proxy)
+                    .onSingleTapGesture { screenPoint, mapPoint in
+                        identifyScreenPoint = screenPoint
+                        identifyTapLocation = mapPoint
+                        Task {
+                            await performIdentify(proxy: proxy)
+                        }
                     }
-                   
+                
+                
+                    
                     .onChange_(of: $points) { oldValue, newValue in
                         viewModel.points = points
                         viewModel.updatePoints()
@@ -46,8 +52,6 @@ public struct ArcGisMapPoints: View {
                         viewModel.updatePoints()
                         viewModel.startLocationDataSource()
                     }
-                    
-                    
                 HStack{
                     Button{
                         Task{
@@ -96,7 +100,7 @@ public struct ArcGisMapPoints: View {
                         .background(Color.white.opacity(0.8))
                         .border(Color.black.opacity(0.3),width: 0.4)
                         .clipShape(RoundedRectangle(cornerRadius: 3))
-                       
+                        
                     }
                 }
                 
@@ -133,6 +137,7 @@ class MapViewModel: ObservableObject {
     var deviceLocationGraphicsOverlay: GraphicsOverlay
     let locationManager: CLLocationManager
     var deviceLocationPoint: Point? = nil
+    var addresses: [Point?: String] = [:]
     
     init(points: [PointCoordinate]) {
         self.points = points
@@ -145,9 +150,9 @@ class MapViewModel: ObservableObject {
         
     }
     
-   
-    func startLocationDataSource() {
     
+    func startLocationDataSource() {
+        
         if locationManager.authorizationStatus == .notDetermined {
             locationManager.requestWhenInUseAuthorization()
         }
@@ -171,18 +176,18 @@ class MapViewModel: ObservableObject {
             deviceLocationGraphicsOverlay.addGraphic(pointGraphic)
         }
     }
-     func recenterDeviceLocation(proxy: MapViewProxy) async{
-         print("Current location button tapped")
-         guard let loc = deviceLocationPoint else {
-             print("can't find current location")
-             return
-         }
-         print("Current location is: \(loc)")
-         let viewpoint = Viewpoint(center: loc, scale: 1e4)
-         await proxy.setViewpoint(viewpoint, duration: 0.5)
+    func recenterDeviceLocation(proxy: MapViewProxy) async{
+        print("Current location button tapped")
+        guard let loc = deviceLocationPoint else {
+            print("can't find current location")
+            return
+        }
+        print("Current location is: \(loc)")
+        let viewpoint = Viewpoint(center: loc, scale: 1e4)
+        await proxy.setViewpoint(viewpoint, duration: 0.5)
     }
     
-   
+    
     
     func updatePoints() {
         print("----Package-Update points func-RecievedPoints---\(points.count)")
@@ -211,6 +216,7 @@ class MapViewModel: ObservableObject {
         let markerSymbol = PictureMarkerSymbol(image: markerImage)
         let pointGraphic = Graphic(geometry: point, symbol: markerSymbol)
         graphicsOverlay.addGraphic(pointGraphic)
+        fetchAddress(for: point)
     }
     
     func addLine(p1: Point, p2: Point) {
@@ -218,6 +224,20 @@ class MapViewModel: ObservableObject {
         let polylineSymbol = SimpleLineSymbol(style: .solid, color: UIColor(Color("mainColor", bundle: .module)), width: 10.0)
         let polylineGraphic = Graphic(geometry: polyline, symbol: polylineSymbol)
         graphicsOverlay.addGraphic(polylineGraphic)
+    }
+    private func fetchAddress(for point: Point) {
+        let location = CLLocation(latitude: point.y, longitude: point.x)
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
+            guard let self = self, error == nil, let placemark = placemarks?.first else { return }
+            let address = [
+                placemark.name,
+                placemark.locality,
+                placemark.administrativeArea,
+                placemark.country
+            ].compactMap { $0 }.joined(separator: ", ")
+            self.addresses[point] = address
+        }
     }
 }
 
@@ -234,6 +254,6 @@ struct ArcGisMapPoints_Previews: PreviewProvider {
 
 #Preview {
     ArcGisMapPoints(points: .constant([PointCoordinate(lat: 30.078747, lng: 31.203802),
-                             PointCoordinate(lat: 30.078023, lng: 31.201780),
-                             PointCoordinate(lat: 30.080108, lng: 31.201958)]))
+                                       PointCoordinate(lat: 30.078023, lng: 31.201780),
+                                       PointCoordinate(lat: 30.080108, lng: 31.201958)]))
 }
