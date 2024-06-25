@@ -98,7 +98,7 @@ class MapViewModel: ObservableObject {
         
         if let p = deviceLocationPoint{
             
-            self.map.initialViewpoint = Viewpoint(center: p, scale: 1e4)
+            //self.map.initialViewpoint = Viewpoint(center: p, scale: 1e4)
             
             guard let markerImage = UIImage(named: "current_location_indicator", in: .module, with: nil) else { return }
             let markerSymbol = PictureMarkerSymbol(image: markerImage)
@@ -107,15 +107,23 @@ class MapViewModel: ObservableObject {
         }
     }
      func recenterDeviceLocation(proxy: MapViewProxy) async{
-           guard let loc = deviceLocationPoint else { return }
-           
-         await proxy.setViewpoint(map.initialViewpoint!, duration: 0.5)
+         print("Current location button tapped")
+         guard let loc = deviceLocationPoint else {
+             print("can't find current location")
+             return
+         }
+         print("Current location is: \(loc)")
+         let viewpoint = Viewpoint(center: loc, scale: 1e4)
+         await proxy.setViewpoint(viewpoint, duration: 0.5)
     }
     
    
     
     func updatePoints() {
         let points = self.points.map { Point(x: $0.lng, y: $0.lat, spatialReference: .wgs84) }
+        if let lastPoints = points.last{
+            self.map.initialViewpoint = Viewpoint(center: lastPoints, scale: 1e4)
+        }
         graphicsOverlay.removeAllGraphics()
         var previousPoint: Point? = nil
         for p in points {

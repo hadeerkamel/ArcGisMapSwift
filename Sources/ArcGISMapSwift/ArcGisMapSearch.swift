@@ -206,9 +206,10 @@ public struct ArcGisMapSearch: View {
         let markerGraphic = Graphic(symbol: PictureMarkerSymbol(image: UIImage(named: "marker", in: .module, with: nil) ?? UIImage()))
         let locatorTask = LocatorTask(url: .geocodeServer)
         let locationManager: CLLocationManager
-        var deviceLocationPoint: Point?{
-            return Point(latitude: AGConfig.currentLat, longitude: AGConfig.currentLong)
-        }
+        var deviceLocationPoint: Point?
+//        {
+//            return Point(latitude: AGConfig.currentLat, longitude: AGConfig.currentLong)
+//        }
         
         init() {
             graphicsOverlay.addGraphic(markerGraphic)
@@ -216,14 +217,14 @@ public struct ArcGisMapSearch: View {
         }
         func startLocationDataSource() {
         
-//            if locationManager.authorizationStatus == .notDetermined {
-//                locationManager.requestWhenInUseAuthorization()
-//            }
-//            locationManager.startUpdatingLocation()
-//            if let location = locationManager.location{
-//                let point = Point(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
-//                deviceLocationPoint = point
-//            }
+            if locationManager.authorizationStatus == .notDetermined {
+                locationManager.requestWhenInUseAuthorization()
+            }
+            locationManager.startUpdatingLocation()
+            if let location = locationManager.location{
+                let point = Point(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                deviceLocationPoint = point
+            }
         }
         func updateSelectedResultOverlay(with point: Point) {
             graphicsOverlay.removeAllGraphics()
