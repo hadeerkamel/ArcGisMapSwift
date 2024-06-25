@@ -53,7 +53,7 @@ public struct ArcGisMapSearchWithInfoView: View {
                dismiss()
             }label: {
                 VStack{
-                    Image(AGConfig.locale == "en" ? "left-arrow" : "right-arrow")
+                    Image("left-arrow",bundle: .module)
                         .resizable()
                         .padding(2)
                     
