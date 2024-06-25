@@ -13,7 +13,7 @@ public struct ArcGisMapPoints: View {
     
     @StateObject private var viewModel: MapViewModel
     @Binding var points: [PointCoordinate]
-    
+    @State var scale = 1e4
     public init(points: Binding<[PointCoordinate]>) {
         _points = points
         _viewModel = StateObject(wrappedValue: MapViewModel(points: []))
@@ -32,21 +32,59 @@ public struct ArcGisMapPoints: View {
                         viewModel.points = points
                         viewModel.updatePoints()
                     }
-                Button{
-                    Task{
-                        await viewModel.recenterDeviceLocation(proxy: proxy)
+                HStack{
+                    Button{
+                        Task{
+                            await viewModel.recenterDeviceLocation(proxy: proxy)
+                        }
+                    }label: {
+                        Image(uiImage: UIImage(named: "myLocation", in: .module, with: nil) ?? UIImage())
+                            .resizable()
+                            .tint(Color("mainColor", bundle: .module))
+                            .padding(5)
+                            .frame(width: 40, height: 40)
+                            .background(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
-                }label: {
-                    Image(uiImage: UIImage(named: "myLocation", in: .module, with: nil) ?? UIImage())
-                        .resizable()
-                        .tint(Color("mainColor", bundle: .module))
-                        .padding(5)
-                        .frame(width: 40, height: 40)
-                        .background(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    
+                    
+                    Spacer()
+                    VStack(spacing: 0){
+                        Button{
+                            Task{
+                                scale -= 1000
+                                await proxy.setViewpointScale(scale)
+                            }
+                        }label: {
+                            Text("+")
+                                .foregroundStyle(Color.black.opacity(0.7))
+                                .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                        }
+                        .frame(width: 40,height: 40)
+                        .background(Color.white.opacity(0.8))
+                        .border(Color.black.opacity(0.3),width: 0.4)
+                        .clipShape(RoundedRectangle(cornerRadius: 3))
+                        
+                        
+                        Button{
+                            Task{
+                                scale += 1000
+                                await proxy.setViewpointScale(scale)
+                            }
+                        }label: {
+                            Text("-")
+                                .foregroundStyle(Color.black.opacity(0.7))
+                                .font(.title)
+                        }
+                        .frame(width: 40,height: 40)
+                        .background(Color.white.opacity(0.8))
+                        .border(Color.black.opacity(0.3),width: 0.4)
+                        .clipShape(RoundedRectangle(cornerRadius: 3))
+                       
+                    }
                 }
-                .padding(.leading, 15)
-                .padding(.bottom, 15)
+                
+                .padding( 15)
             }
         }
     }
@@ -120,6 +158,7 @@ class MapViewModel: ObservableObject {
    
     
     func updatePoints() {
+        print("----Package-Update points func-RecievedPoints---\(points.count)")
         let points = self.points.map { Point(x: $0.lng, y: $0.lat, spatialReference: .wgs84) }
         if let lastPoints = points.last{
             self.map.initialViewpoint = Viewpoint(center: lastPoints, scale: 1e4)
