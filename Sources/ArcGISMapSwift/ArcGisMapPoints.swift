@@ -8,8 +8,13 @@
 import SwiftUI
 import ArcGIS
 import CoreLocation
+import ArcGISToolkit
 
 public struct ArcGisMapPoints: View {
+    
+    @State private var identifyScreenPoint: CGPoint?
+    @State private var identifyTapLocation: Point?
+    @State private var calloutPlacement: CalloutPlacement?
     
     @StateObject private var viewModel: MapViewModel
     @Binding var points: [PointCoordinate]
@@ -23,15 +28,26 @@ public struct ArcGisMapPoints: View {
         ZStack(alignment: .bottomLeading){
             MapViewReader { proxy in
                 MapView(map: viewModel.map, graphicsOverlays: [viewModel.graphicsOverlay, viewModel.deviceLocationGraphicsOverlay])
+                
+                    .callout(placement: $calloutPlacement.animation()) { placement in
+                       
+                        Text(placement.geoElement?.attributes["Match_addr"] as? String ?? "Unknown Address").padding()
+                    }
+                    .task(id: identifyScreenPoint) {
+                        await performIdentify(proxy: proxy)
+                    }
+                   
+                    .onChange_(of: $points) { oldValue, newValue in
+                        viewModel.points = points
+                        viewModel.updatePoints()
+                    }
                     .onAppear {
                         viewModel.points = points
                         viewModel.updatePoints()
                         viewModel.startLocationDataSource()
                     }
-                    .onChange_(of: $points) { oldValue, newValue in
-                        viewModel.points = points
-                        viewModel.updatePoints()
-                    }
+                    
+                    
                 HStack{
                     Button{
                         Task{
@@ -87,6 +103,17 @@ public struct ArcGisMapPoints: View {
                 .padding( 15)
             }
         }
+        
+    }
+    private func performIdentify(proxy: MapViewProxy) async {
+        guard let screenPoint = identifyScreenPoint,
+              let identifyResult = try? await proxy.identify(on: viewModel.graphicsOverlay, screenPoint: screenPoint, tolerance: 10) else { return }
+        
+        calloutPlacement = identifyResult.graphics.first.flatMap {
+            CalloutPlacement.geoElement($0, tapLocation: identifyTapLocation)
+        }
+        identifyScreenPoint = nil
+        identifyTapLocation = nil
     }
 }
 
@@ -205,8 +232,8 @@ struct ArcGisMapPoints_Previews: PreviewProvider {
 }
 
 
-//#Preview {
-//    ArcGisMapPoints(points: .constant([PointCoordinate(lat: 30.078747, lng: 31.203802),
-//                             PointCoordinate(lat: 30.078023, lng: 31.201780),
-//                             PointCoordinate(lat: 30.080108, lng: 31.201958)]))
-//}
+#Preview {
+    ArcGisMapPoints(points: .constant([PointCoordinate(lat: 30.078747, lng: 31.203802),
+                             PointCoordinate(lat: 30.078023, lng: 31.201780),
+                             PointCoordinate(lat: 30.080108, lng: 31.201958)]))
+}
