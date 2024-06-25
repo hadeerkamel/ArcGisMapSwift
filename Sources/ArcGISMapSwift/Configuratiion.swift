@@ -8,7 +8,7 @@
 import Foundation
 public var AGConfig = Configuration(locale: "en", currentLat: 0, currentLong: 0)
 public struct Configuration{
-    var locale: String
-    var currentLat: Double
-    var currentLong: Double
+    public var locale: String
+    public var currentLat: Double
+    public var currentLong: Double
 }
