@@ -32,10 +32,17 @@ public struct Infoview: View {
             .padding(.bottom, 10)
             
             HStack(alignment: .center){
-                Image("location", bundle: .module)
-                    .foregroundColor(Color("mainColor", bundle: .module))
-                    .padding(.leading)
+                
+                if AGConfig.locale == "ar" {
+                    Spacer()
                     
+                }
+                if AGConfig.locale == "en" {
+                    Image("location", bundle: .module)
+                        .foregroundColor(Color("mainColor", bundle: .module))
+                        .padding(.leading)
+                }
+                
                 VStack(alignment: AGConfig.locale == "en" ? .leading : .trailing){
                     
                     Text(country)
@@ -46,7 +53,14 @@ public struct Infoview: View {
                         .padding(0)
                         .padding(.bottom, 5)
                 }
-                Spacer()
+                if AGConfig.locale == "ar" {
+                    Image("location", bundle: .module)
+                        .foregroundColor(Color("mainColor", bundle: .module))
+                        .padding(.leading)
+                }
+                if AGConfig.locale == "en" {
+                    Spacer()
+                }
             }
             
             .frame(maxWidth: .infinity)
@@ -74,6 +88,7 @@ public struct Infoview: View {
             
         }
         .frame(maxWidth: .infinity)
+        
     //    .background(Color.red)
     }
 }
