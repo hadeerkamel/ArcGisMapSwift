@@ -209,7 +209,7 @@ class MapViewModel: ObservableObject {
             
             previousPoint = p
         }
-        print("----Package-Update points func-RecievedPoints---\(points.count)")
+        //print("----Package-Update points func-RecievedPoints---\(points.count)")
     }
     
     func addPoint(point: Point) {
