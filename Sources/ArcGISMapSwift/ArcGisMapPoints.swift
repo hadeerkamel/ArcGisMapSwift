@@ -252,8 +252,8 @@ struct ArcGisMapPoints_Previews: PreviewProvider {
 }
 
 
-#Preview {
-    ArcGisMapPoints(points: .constant([PointCoordinate(lat: 30.078747, lng: 31.203802),
-                                       PointCoordinate(lat: 30.078023, lng: 31.201780),
-                                       PointCoordinate(lat: 30.080108, lng: 31.201958)]))
-}
+//#Preview {
+//    ArcGisMapPoints(points: .constant([PointCoordinate(lat: 30.078747, lng: 31.203802),
+//                                       PointCoordinate(lat: 30.078023, lng: 31.201780),
+//                                       PointCoordinate(lat: 30.080108, lng: 31.201958)]))
+//}
