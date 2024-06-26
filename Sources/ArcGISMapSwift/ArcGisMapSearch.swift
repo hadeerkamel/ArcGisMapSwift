@@ -69,10 +69,11 @@ public struct ArcGisMapSearch: View {
                         await getAddressFromPoint(point: searchPoint)
                     }
                     
-
+                    
                 }
                 
-                viewpointChanged($0.targetGeometry.extent.center) }
+                viewpointChanged($0.targetGeometry.extent.center)
+            }
             .onVisibleAreaChanged {geoViewExtent = $0.extent }
             .callout(placement: $calloutPlacement.animation()) { placement in
                 Text(placement.geoElement?.attributes["Match_addr"] as? String ?? "Unknown Address").padding()
