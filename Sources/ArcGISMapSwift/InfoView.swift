@@ -33,10 +33,10 @@ public struct Infoview: View {
             
             HStack(alignment: .center){
                 
-                if AGConfig.locale == "ar" {
-                    Spacer()
-                    
-                }
+//                if AGConfig.locale == "ar" {
+//                    Spacer()
+//                    
+//                }
                 if AGConfig.locale == "en" {
                     Image("location", bundle: .module)
                         .foregroundColor(Color("mainColor", bundle: .module))
