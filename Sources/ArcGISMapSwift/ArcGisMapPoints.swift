@@ -17,10 +17,10 @@ public struct ArcGisMapPoints: View {
     @State private var calloutPlacement: CalloutPlacement?
     
     private var viewModel: MapViewModel
-    //@Binding var points: [PointCoordinate]
     @State var scale = AGConfig.scale
+    
     public init() {
-       // _points = points
+       
         viewModel = MapViewModel()
     }
     
@@ -42,16 +42,8 @@ public struct ArcGisMapPoints: View {
                             await performIdentify(proxy: proxy)
                         }
                     }
-                
-                
-                    
-//                    .onChange_(of: $points) { oldValue, newValue in
-//                        viewModel.points = points
-//                        viewModel.updatePoints()
-//                    }
                     .onAppear {
-                       // viewModel.points = points
-                       // viewModel.updatePoints()
+                       
                         viewModel.startLocationDataSource()
                     }
                 HStack{
@@ -125,7 +117,7 @@ public struct ArcGisMapPoints: View {
     }
     public func updatePoints(points: [PointCoordinate]){
         print("---Package-View-UpdatePoints- \(points.count)")
-        //viewModel.points = points
+        
         viewModel.updatePoints(points: points)
     }
 }
@@ -140,7 +132,7 @@ public struct PointCoordinate: Equatable {
 }
 
 class MapViewModel: ObservableObject {
-  //  @State var points: [PointCoordinate]
+
     @Published var map: Map
     var graphicsOverlay: GraphicsOverlay
     var deviceLocationGraphicsOverlay: GraphicsOverlay
@@ -149,7 +141,7 @@ class MapViewModel: ObservableObject {
     var addresses: [Point?: String] = [:]
     
     init() {
-        //self.points = points
+        
         self.map = Map(basemapStyle: .osmStandard)
         self.graphicsOverlay = GraphicsOverlay()
         self.deviceLocationGraphicsOverlay = GraphicsOverlay()
@@ -158,7 +150,6 @@ class MapViewModel: ObservableObject {
         ArcGISEnvironment.apiKey = APIKey(APIKEY)
         
     }
-    
     
     func startLocationDataSource() {
         
@@ -218,7 +209,6 @@ class MapViewModel: ObservableObject {
             
             previousPoint = p
         }
-        //print("----Package-Update points func-RecievedPoints---\(points.count)")
     }
     
     func addPoint(point: Point) {
