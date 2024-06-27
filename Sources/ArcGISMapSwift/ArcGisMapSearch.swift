@@ -14,7 +14,7 @@ import CoreLocation
 let APIKEY = "AAPK02c4162a6c244595b0564d86007d14b9Wvyt7aoPDLSmphsm2gwYsNv3ov6GmtsaqObChcDJx0YGTThOj2FwZ8xQQatIp3ds"
 
 public struct ArcGisMapSearch: View {
-    @State private var viewpoint: Viewpoint? = Viewpoint(center: Point(x: -93.258133, y: 44.986656, spatialReference: .wgs84), scale: 1e4)
+    @State private var viewpoint: Viewpoint? = Viewpoint(center: Point(x: -93.258133, y: 44.986656, spatialReference: .wgs84), scale: AGConfig.scale)
     @State private var isGeoViewNavigating = false
     @State private var geoViewExtent: Envelope?
     @State private var queryCenter: Point?
@@ -107,7 +107,7 @@ public struct ArcGisMapSearch: View {
            guard let loc = model.deviceLocationPoint else { return }
            print(loc)
            dropPin(at: loc)
-           viewpoint = Viewpoint(center: loc, scale: 1e4)
+           viewpoint = Viewpoint(center: loc, scale: AGConfig.scale)
             await proxy.setViewpoint(viewpoint!, duration: 0.5) // Animate to the new viewpoint
            queryCenter = loc
     }
@@ -123,7 +123,7 @@ public struct ArcGisMapSearch: View {
         guard let loc = loc else{return}
         
         dropPin(at: loc)
-        viewpoint = Viewpoint(center: loc, scale: 1e4)
+        viewpoint = Viewpoint(center: loc, scale: AGConfig.scale)
     }
     
     private func handleSingleTap(screenPoint: CGPoint, tapLocation: Point) {

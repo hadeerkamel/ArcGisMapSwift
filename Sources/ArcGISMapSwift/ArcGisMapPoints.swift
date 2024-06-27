@@ -11,14 +11,14 @@ import CoreLocation
 import ArcGISToolkit
 
 public struct ArcGisMapPoints: View {
-    //@State private var viewpoint: Viewpoint? = Viewpoint(center: Point(x: -93.258133, y: 44.986656, spatialReference: .wgs84), scale: 1e4)
+    
     @State private var identifyScreenPoint: CGPoint?
     @State private var identifyTapLocation: Point?
     @State private var calloutPlacement: CalloutPlacement?
     
     private var viewModel: MapViewModel
     //@Binding var points: [PointCoordinate]
-    @State var scale = 1e4
+    @State var scale = AGConfig.scale
     public init() {
        // _points = points
         viewModel = MapViewModel()
@@ -74,7 +74,7 @@ public struct ArcGisMapPoints: View {
                     VStack(spacing: 0){
                         Button{
                             Task{
-                                scale -= 1000
+                                scale -= AGConfig.zoomInOutStep
                                 await proxy.setViewpointScale(scale)
                             }
                         }label: {
@@ -90,7 +90,7 @@ public struct ArcGisMapPoints: View {
                         
                         Button{
                             Task{
-                                scale += 1000
+                                scale += AGConfig.zoomInOutStep
                                 await proxy.setViewpointScale(scale)
                             }
                         }label: {
@@ -175,7 +175,7 @@ class MapViewModel: ObservableObject {
         
         if let p = deviceLocationPoint{
             
-            self.map.initialViewpoint = Viewpoint(center: p, scale: 1e4)
+            self.map.initialViewpoint = Viewpoint(center: p, scale: AGConfig.scale)
             
             guard let markerImage = UIImage(named: "current_location_indicator", in: .module, with: nil) else { return }
             let markerSymbol = PictureMarkerSymbol(image: markerImage)
@@ -190,7 +190,7 @@ class MapViewModel: ObservableObject {
             return
         }
         print("Current location is: \(loc)")
-        let viewpoint = Viewpoint(center: loc, scale: 1e4)
+        let viewpoint = Viewpoint(center: loc, scale: AGConfig.scale)
         await proxy.setViewpoint(viewpoint, duration: 0.5)
     }
     
@@ -200,7 +200,7 @@ class MapViewModel: ObservableObject {
         print("----Package-Update points func-RecievedPoints---\(points.count)")
         let points = points.map { Point(x: $0.lng, y: $0.lat, spatialReference: .wgs84) }
         if let lastPoints = points.last{
-            self.map.initialViewpoint = Viewpoint(center: lastPoints, scale: 1e4)
+            self.map.initialViewpoint = Viewpoint(center: lastPoints, scale: AGConfig.scale)
         }
         graphicsOverlay.removeAllGraphics()
         var previousPoint: Point? = nil

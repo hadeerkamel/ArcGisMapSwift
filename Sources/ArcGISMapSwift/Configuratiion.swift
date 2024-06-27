@@ -6,9 +6,9 @@
 //
 
 import Foundation
-public var AGConfig = Configuration(locale: "en", currentLat: 0, currentLong: 0)
+public var AGConfig = Configuration()
 public struct Configuration{
-    public var locale: String
-    public var currentLat: Double
-    public var currentLong: Double
+    public var locale = "en"
+    public var scale = 1e4
+    public var zoomInOutStep: Double = 1000
 }
