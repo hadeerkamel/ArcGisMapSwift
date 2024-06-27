@@ -21,7 +21,7 @@ public struct ArcGisMapPoints: View {
     @State var scale = 1e4
     public init() {
        // _points = points
-        _viewModel = StateObject(wrappedValue: MapViewModel(points: []))
+        _viewModel = StateObject(wrappedValue: MapViewModel())
     }
     
     public var body: some View {
@@ -123,8 +123,8 @@ public struct ArcGisMapPoints: View {
     }
     public func updatePoints(points: [PointCoordinate]){
         print("---Package-View-UpdatePoints- \(points.count)")
-        viewModel.points = points
-        viewModel.updatePoints()
+        //viewModel.points = points
+        viewModel.updatePoints(points: points)
     }
 }
 
@@ -138,7 +138,7 @@ public struct PointCoordinate: Equatable {
 }
 
 class MapViewModel: ObservableObject {
-    var points: [PointCoordinate]
+  //  @State var points: [PointCoordinate]
     @Published var map: Map
     var graphicsOverlay: GraphicsOverlay
     var deviceLocationGraphicsOverlay: GraphicsOverlay
@@ -146,8 +146,8 @@ class MapViewModel: ObservableObject {
     var deviceLocationPoint: Point? = nil
     var addresses: [Point?: String] = [:]
     
-    init(points: [PointCoordinate]) {
-        self.points = points
+    init() {
+        //self.points = points
         self.map = Map(basemapStyle: .osmStandard)
         self.graphicsOverlay = GraphicsOverlay()
         self.deviceLocationGraphicsOverlay = GraphicsOverlay()
@@ -196,9 +196,9 @@ class MapViewModel: ObservableObject {
     
     
     
-    func updatePoints() {
+    func updatePoints(points: [PointCoordinate]) {
         print("----Package-Update points func-RecievedPoints---\(points.count)")
-        let points = self.points.map { Point(x: $0.lng, y: $0.lat, spatialReference: .wgs84) }
+        let points = points.map { Point(x: $0.lng, y: $0.lat, spatialReference: .wgs84) }
         if let lastPoints = points.last{
             self.map.initialViewpoint = Viewpoint(center: lastPoints, scale: 1e4)
         }
