@@ -11,23 +11,25 @@ import CoreLocation
 import ArcGISToolkit
 
 public struct ArcGisMapPoints: View {
-    
+    @State private var viewpoint: Viewpoint? = Viewpoint(center: Point(x: -93.258133, y: 44.986656, spatialReference: .wgs84), scale: 1e4)
     @State private var identifyScreenPoint: CGPoint?
     @State private var identifyTapLocation: Point?
     @State private var calloutPlacement: CalloutPlacement?
     
     @StateObject private var viewModel: MapViewModel
-    @Binding var points: [PointCoordinate]
+    //@Binding var points: [PointCoordinate]
     @State var scale = 1e4
-    public init(points: Binding<[PointCoordinate]>) {
-        _points = points
+    public init() {
+       // _points = points
         _viewModel = StateObject(wrappedValue: MapViewModel(points: []))
     }
     
     public var body: some View {
         ZStack(alignment: .bottomLeading){
             MapViewReader { proxy in
-                MapView(map: viewModel.map, graphicsOverlays: [viewModel.graphicsOverlay, viewModel.deviceLocationGraphicsOverlay])
+                MapView(map: viewModel.map,
+                        viewpoint: viewpoint,
+                        graphicsOverlays: [viewModel.graphicsOverlay, viewModel.deviceLocationGraphicsOverlay])
                 
                     .callout(placement: $calloutPlacement.animation()) { placement in
                         Text(viewModel.addresses[ placement.geoElement?.geometry as? Point  ] ?? "")
@@ -43,13 +45,13 @@ public struct ArcGisMapPoints: View {
                 
                 
                     
-                    .onChange_(of: $points) { oldValue, newValue in
-                        viewModel.points = points
-                        viewModel.updatePoints()
-                    }
+//                    .onChange_(of: $points) { oldValue, newValue in
+//                        viewModel.points = points
+//                        viewModel.updatePoints()
+//                    }
                     .onAppear {
-                        viewModel.points = points
-                        viewModel.updatePoints()
+                       // viewModel.points = points
+                       // viewModel.updatePoints()
                         viewModel.startLocationDataSource()
                     }
                 HStack{
@@ -119,6 +121,10 @@ public struct ArcGisMapPoints: View {
         identifyScreenPoint = nil
         identifyTapLocation = nil
     }
+    public func updatePoints(points: [PointCoordinate]){
+        viewModel.points = points
+        viewModel.updatePoints()
+    }
 }
 
 public struct PointCoordinate: Equatable {
@@ -168,7 +174,7 @@ class MapViewModel: ObservableObject {
         
         if let p = deviceLocationPoint{
             
-            //self.map.initialViewpoint = Viewpoint(center: p, scale: 1e4)
+            self.map.initialViewpoint = Viewpoint(center: p, scale: 1e4)
             
             guard let markerImage = UIImage(named: "current_location_indicator", in: .module, with: nil) else { return }
             let markerSymbol = PictureMarkerSymbol(image: markerImage)
@@ -244,11 +250,7 @@ class MapViewModel: ObservableObject {
 
 struct ArcGisMapPoints_Previews: PreviewProvider {
     static var previews: some View {
-        ArcGisMapPoints(points: .constant([
-            PointCoordinate(lat: 30.078747, lng: 31.203802),
-            PointCoordinate(lat: 30.078023, lng: 31.201780),
-            PointCoordinate(lat: 30.080108, lng: 31.201958)
-        ]))
+        ArcGisMapPoints()
     }
 }
 
