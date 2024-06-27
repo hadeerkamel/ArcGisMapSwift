@@ -122,6 +122,7 @@ public struct ArcGisMapPoints: View {
         identifyTapLocation = nil
     }
     public func updatePoints(points: [PointCoordinate]){
+        print("---Package-View-UpdatePoints- \(points.count)")
         viewModel.points = points
         viewModel.updatePoints()
     }
