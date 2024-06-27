@@ -16,12 +16,12 @@ public struct ArcGisMapPoints: View {
     @State private var identifyTapLocation: Point?
     @State private var calloutPlacement: CalloutPlacement?
     
-    @StateObject private var viewModel: MapViewModel
+    private var viewModel: MapViewModel
     //@Binding var points: [PointCoordinate]
     @State var scale = 1e4
     public init() {
        // _points = points
-        _viewModel = StateObject(wrappedValue: MapViewModel())
+        viewModel = MapViewModel()
     }
     
     public var body: some View {
