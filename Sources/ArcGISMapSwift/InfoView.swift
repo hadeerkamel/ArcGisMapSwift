@@ -58,9 +58,9 @@ public struct Infoview: View {
                         .foregroundColor(Color("mainColor", bundle: .module))
                         .padding(.trailing)
                 }
-                if AGConfig.locale == "en" {
+               // if AGConfig.locale == "en" {
                     Spacer()
-                }
+                //}
             }
             
             .frame(maxWidth: .infinity)
