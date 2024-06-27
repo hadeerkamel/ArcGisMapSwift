@@ -137,7 +137,7 @@ public struct PointCoordinate: Equatable {
 }
 
 class MapViewModel: ObservableObject {
-    @Published var points: [PointCoordinate]
+    var points: [PointCoordinate]
     @Published var map: Map
     var graphicsOverlay: GraphicsOverlay
     var deviceLocationGraphicsOverlay: GraphicsOverlay
