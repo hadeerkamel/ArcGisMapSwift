@@ -74,8 +74,10 @@ public struct ArcGisMapPoints: View {
                     VStack(spacing: 0){
                         Button{
                             Task{
-                                scale -= AGConfig.zoomInOutStep
-                                await proxy.setViewpointScale(scale)
+                                if (scale > AGConfig.zoomInOutStep){
+                                    scale -= AGConfig.zoomInOutStep
+                                    await proxy.setViewpointScale(scale)
+                                }
                             }
                         }label: {
                             Text("+")
