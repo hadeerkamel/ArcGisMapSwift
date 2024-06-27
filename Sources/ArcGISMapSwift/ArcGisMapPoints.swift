@@ -11,7 +11,7 @@ import CoreLocation
 import ArcGISToolkit
 
 public struct ArcGisMapPoints: View {
-    @State private var viewpoint: Viewpoint? = Viewpoint(center: Point(x: -93.258133, y: 44.986656, spatialReference: .wgs84), scale: 1e4)
+    //@State private var viewpoint: Viewpoint? = Viewpoint(center: Point(x: -93.258133, y: 44.986656, spatialReference: .wgs84), scale: 1e4)
     @State private var identifyScreenPoint: CGPoint?
     @State private var identifyTapLocation: Point?
     @State private var calloutPlacement: CalloutPlacement?
@@ -28,7 +28,7 @@ public struct ArcGisMapPoints: View {
         ZStack(alignment: .bottomLeading){
             MapViewReader { proxy in
                 MapView(map: viewModel.map,
-                        viewpoint: viewpoint,
+                        //viewpoint: viewpoint,
                         graphicsOverlays: [viewModel.graphicsOverlay, viewModel.deviceLocationGraphicsOverlay])
                 
                     .callout(placement: $calloutPlacement.animation()) { placement in
